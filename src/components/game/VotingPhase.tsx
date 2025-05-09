@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
   View,
   TouchableOpacity,
-  ScrollView,
 } from 'react-native';
 import { Player } from '../../types/gameTypes';
 
@@ -13,7 +12,7 @@ interface VotingPhaseProps {
   currentPlayerIndex: number;
   onPhaseComplete: () => void;
   onPlayerComplete: () => void;
-  submitVote: (votedPlayerIndex: number) => void;
+  submitVote: (playerIndex: number) => void;
 }
 
 export const VotingPhase: React.FC<VotingPhaseProps> = ({
@@ -23,31 +22,61 @@ export const VotingPhase: React.FC<VotingPhaseProps> = ({
   onPlayerComplete,
   submitVote,
 }) => {
+  const [selectedPlayerIndex, setSelectedPlayerIndex] = useState<number | null>(null);
+
+  const currentPlayer = players[currentPlayerIndex];
+  const hasVoted = currentPlayer.hasVoted;
+
+  const handleVoteSelect = (playerIndex: number) => {
+    setSelectedPlayerIndex(playerIndex);
+  };
+
+  const handleConfirmVote = () => {
+    if (selectedPlayerIndex !== null) {
+      submitVote(selectedPlayerIndex);
+      setSelectedPlayerIndex(null);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Voting Phase</Text>
-      <Text style={styles.subtitle}>Private Vote</Text>
-      <Text style={styles.playerName}>{players[currentPlayerIndex].name}</Text>
-      <Text style={styles.instructions}>
-        Vote for who you think is in the dark.
-        Your vote will be kept secret until the end of the game.
+      <Text style={styles.subtitle}>
+        {hasVoted
+          ? "You've already voted. Waiting for other players..."
+          : `It's ${currentPlayer.name}'s turn to vote`}
       </Text>
-      
-      <ScrollView style={styles.votingList}>
+      <Text style={styles.instructions}>
+        Who do you think is in the dark?
+      </Text>
+
+      <View style={styles.playerList}>
         {players.map((player, index) => (
           <TouchableOpacity
             key={index}
             style={[
-              styles.voteButton,
-              index === currentPlayerIndex && styles.voteButtonDisabled
+              styles.playerButton,
+              index === currentPlayerIndex && styles.disabledButton,
+              selectedPlayerIndex === index && styles.selectedButton,
             ]}
-            onPress={() => submitVote(index)}
-            disabled={index === currentPlayerIndex}
+            onPress={() => handleVoteSelect(index)}
+            disabled={hasVoted || index === currentPlayerIndex}
           >
-            <Text style={styles.voteButtonText}>{player.name}</Text>
+            <Text style={styles.playerButtonText}>{player.name}</Text>
           </TouchableOpacity>
         ))}
-      </ScrollView>
+      </View>
+
+      <TouchableOpacity
+        style={[
+          styles.confirmButton,
+          (selectedPlayerIndex === null || hasVoted) && styles.disabledConfirmButton,
+        ]}
+        onPress={handleConfirmVote}
+        disabled={selectedPlayerIndex === null || hasVoted}
+      >
+        <Text style={styles.confirmButtonText}>Confirm</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -56,6 +85,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    backgroundColor: '#1a1a1a',
   },
   title: {
     fontSize: 32,
@@ -70,38 +100,47 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 10,
   },
-  playerName: {
-    fontSize: 36,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    textAlign: 'center',
-    marginTop: 20,
-  },
   instructions: {
     fontSize: 18,
     color: '#ffffff',
     textAlign: 'center',
-    marginTop: 30,
-    marginBottom: 40,
-    lineHeight: 24,
-  },
-  votingList: {
-    flex: 1,
-    width: '100%',
     marginTop: 20,
+    marginBottom: 30,
   },
-  voteButton: {
+  playerList: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  playerButton: {
+    backgroundColor: '#2a2a2a',
+    padding: 15,
+    borderRadius: 8,
+    marginBottom: 10,
+    alignItems: 'center',
+  },
+  playerButtonText: {
+    color: '#ffffff',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  disabledButton: {
+    backgroundColor: '#1a1a1a',
+    opacity: 0.5,
+  },
+  selectedButton: {
+    backgroundColor: '#4CAF50',
+  },
+  confirmButton: {
     backgroundColor: '#4CAF50',
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
-    marginBottom: 10,
+    marginTop: 20,
   },
-  voteButtonDisabled: {
-    backgroundColor: '#666',
-    opacity: 0.5,
+  disabledConfirmButton: {
+    backgroundColor: '#666666',
   },
-  voteButtonText: {
+  confirmButtonText: {
     color: '#ffffff',
     fontSize: 20,
     fontWeight: 'bold',
