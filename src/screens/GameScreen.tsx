@@ -44,6 +44,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ navigation, route }) => 
   const [gamePhase, setGamePhase] = useState<GamePhase>('setup');
   const [availableQuestions, setAvailableQuestions] = useState<string[]>([]);
   const [votingComplete, setVotingComplete] = useState(false);
+  const [showInDarkModal, setShowInDarkModal] = useState(false);
 
   useEffect(() => {
     // Initialize players
@@ -87,25 +88,24 @@ export const GameScreen: React.FC<GameScreenProps> = ({ navigation, route }) => 
 
   const showItemToPlayer = () => {
     const currentPlayer = players[currentPlayerIndex];
-    if (!currentPlayer.isInTheDark) {
+    if (currentPlayer.isInTheDark) {
+      setShowInDarkModal(true);
+    } else {
       setShowItemModal(true);
     }
     
-    // Mark player as having seen the item
+    // Mark player as having seen the item or been notified they're in the dark
     const updatedPlayers = [...players];
     updatedPlayers[currentPlayerIndex].hasSeenItem = true;
     setPlayers(updatedPlayers);
 
-    // Move to next player or next phase
-    if (currentPlayerIndex === players.length - 1) {
-      if (gamePhase === 'reveal') {
-        setGamePhase('questions');
-        setCurrentPlayerIndex(0);
-      } else if (gamePhase === 'questions') {
+    // Move to next player or next phase if we're in the questions phase
+    if (gamePhase === 'questions') {
+      if (currentPlayerIndex === players.length - 1) {
         setGamePhase('review');
+      } else {
+        setCurrentPlayerIndex(currentPlayerIndex + 1);
       }
-    } else {
-      setCurrentPlayerIndex(currentPlayerIndex + 1);
     }
   };
 
@@ -172,15 +172,24 @@ export const GameScreen: React.FC<GameScreenProps> = ({ navigation, route }) => 
         onPress={showItemToPlayer}
       >
         <Text style={styles.showItemButtonText}>
-          {players[currentPlayerIndex].isInTheDark ? 'You are in the dark' : 'Show Item'}
+          Show Information
         </Text>
       </TouchableOpacity>
 
+      {/* Modal for players who can see the item */}
       <Modal
         visible={showItemModal}
         transparent={true}
         animationType="fade"
-        onRequestClose={() => setShowItemModal(false)}
+        onRequestClose={() => {
+          setShowItemModal(false);
+          if (currentPlayerIndex === players.length - 1) {
+            setGamePhase('questions');
+            setCurrentPlayerIndex(0);
+          } else {
+            setCurrentPlayerIndex(currentPlayerIndex + 1);
+          }
+        }}
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
@@ -188,9 +197,56 @@ export const GameScreen: React.FC<GameScreenProps> = ({ navigation, route }) => 
             <Text style={styles.modalItem}>{selectedItem}</Text>
             <TouchableOpacity 
               style={styles.modalButton}
-              onPress={() => setShowItemModal(false)}
+              onPress={() => {
+                setShowItemModal(false);
+                if (currentPlayerIndex === players.length - 1) {
+                  setGamePhase('questions');
+                  setCurrentPlayerIndex(0);
+                } else {
+                  setCurrentPlayerIndex(currentPlayerIndex + 1);
+                }
+              }}
             >
               <Text style={styles.modalButtonText}>Got it!</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Modal for players who are in the dark */}
+      <Modal
+        visible={showInDarkModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => {
+          setShowInDarkModal(false);
+          if (currentPlayerIndex === players.length - 1) {
+            setGamePhase('questions');
+            setCurrentPlayerIndex(0);
+          } else {
+            setCurrentPlayerIndex(currentPlayerIndex + 1);
+          }
+        }}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>You are in the dark!</Text>
+            <Text style={styles.modalDescription}>
+              You will need to figure out what the item is by asking questions and listening to other players' responses.
+            </Text>
+            <TouchableOpacity 
+              style={styles.modalButton}
+              onPress={() => {
+                setShowInDarkModal(false);
+                if (currentPlayerIndex === players.length - 1) {
+                  setGamePhase('questions');
+                  setCurrentPlayerIndex(0);
+                } else {
+                  setCurrentPlayerIndex(currentPlayerIndex + 1);
+                }
+              }}
+            >
+              <Text style={styles.modalButtonText}>I understand</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -504,5 +560,12 @@ const styles = StyleSheet.create({
   resultText: {
     fontSize: 18,
     color: '#ffffff',
+  },
+  modalDescription: {
+    fontSize: 18,
+    color: '#ffffff',
+    textAlign: 'center',
+    marginVertical: 20,
+    lineHeight: 24,
   },
 }); 
