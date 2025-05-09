@@ -8,4 +8,4 @@ export interface Player {
   hasVoted: boolean;
 }
 
-export type GamePhase = 'setup' | 'reveal' | 'questions' | 'review' | 'voting' | 'ended'; 
+export type GamePhase = 'setup' | 'reveal' | 'questions' | 'review' | 'voting' | 'voteResults' | 'guessing' | 'ended'; 

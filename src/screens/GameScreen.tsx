@@ -10,6 +10,8 @@ import { RevealPhase } from '../components/game/RevealPhase';
 import { QuestionsPhase } from '../components/game/QuestionsPhase';
 import { ReviewPhase } from '../components/game/ReviewPhase';
 import { VotingPhase } from '../components/game/VotingPhase';
+import { VoteResultsPhase } from '../components/game/VoteResultsPhase';
+import { GuessingPhase } from '../components/game/GuessingPhase';
 import { GameOver } from '../components/game/GameOver';
 
 type GameScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Game'>;
@@ -92,7 +94,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ navigation, route }) => 
     const allPlayersVoted = updatedPlayers.every(player => player.hasVoted);
     
     if (allPlayersVoted) {
-      setGamePhase('ended');
+      setGamePhase('voteResults');
     } else {
       // Move to next player who hasn't voted yet
       let nextPlayerIndex = (currentPlayerIndex + 1) % players.length;
@@ -110,7 +112,21 @@ export const GameScreen: React.FC<GameScreenProps> = ({ navigation, route }) => 
   };
 
   const handlePlayerComplete = () => {
-    setCurrentPlayerIndex(currentPlayerIndex + 1);
+    if (gamePhase === 'guessing') {
+      // Find the next player who is in the dark
+      let nextPlayerIndex = (currentPlayerIndex + 1) % players.length;
+      while (nextPlayerIndex !== currentPlayerIndex) {
+        if (players[nextPlayerIndex].isInTheDark) {
+          setCurrentPlayerIndex(nextPlayerIndex);
+          return;
+        }
+        nextPlayerIndex = (nextPlayerIndex + 1) % players.length;
+      }
+      // If we've gone through all players, move to the next phase
+      handlePhaseComplete();
+    } else {
+      setCurrentPlayerIndex(currentPlayerIndex + 1);
+    }
   };
 
   const handlePhaseComplete = () => {
@@ -126,6 +142,15 @@ export const GameScreen: React.FC<GameScreenProps> = ({ navigation, route }) => 
         setGamePhase('voting');
         break;
       case 'voting':
+        setGamePhase('voteResults');
+        break;
+      case 'voteResults':
+        // Find the first player who is in the dark
+        const firstDarkPlayerIndex = players.findIndex(player => player.isInTheDark);
+        setCurrentPlayerIndex(firstDarkPlayerIndex);
+        setGamePhase('guessing');
+        break;
+      case 'guessing':
         setGamePhase('ended');
         break;
     }
@@ -169,6 +194,23 @@ export const GameScreen: React.FC<GameScreenProps> = ({ navigation, route }) => 
           onPhaseComplete={handlePhaseComplete}
           onPlayerComplete={handlePlayerComplete}
           submitVote={submitVote}
+        />
+      )}
+      {gamePhase === 'voteResults' && players.length > 0 && (
+        <VoteResultsPhase
+          players={players}
+          onPhaseComplete={handlePhaseComplete}
+          tieIsWin={false}
+        />
+      )}
+      {gamePhase === 'guessing' && players.length > 0 && (
+        <GuessingPhase
+          players={players}
+          currentPlayerIndex={currentPlayerIndex}
+          selectedItem={selectedItem}
+          categoryItems={categoryData.items}
+          onPhaseComplete={handlePhaseComplete}
+          onPlayerComplete={handlePlayerComplete}
         />
       )}
       {gamePhase === 'ended' && players.length > 0 && (
