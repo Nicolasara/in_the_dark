@@ -15,6 +15,7 @@ interface GuessingPhaseProps {
   categoryItems: string[];
   onPhaseComplete: () => void;
   onPlayerComplete: () => void;
+  updatePlayer: (playerIndex: number, updates: Partial<Player>) => void;
 }
 
 export const GuessingPhase: React.FC<GuessingPhaseProps> = ({
@@ -24,6 +25,7 @@ export const GuessingPhase: React.FC<GuessingPhaseProps> = ({
   categoryItems,
   onPhaseComplete,
   onPlayerComplete,
+  updatePlayer,
 }) => {
   const [options, setOptions] = useState<string[]>([]);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -49,6 +51,7 @@ export const GuessingPhase: React.FC<GuessingPhaseProps> = ({
 
   const handleConfirm = () => {
     if (selectedOption) {
+      updatePlayer(currentPlayerIndex, { answer: selectedOption });
       onPlayerComplete();
       setSelectedOption(null);
     }

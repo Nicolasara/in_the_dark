@@ -12,6 +12,7 @@ import { ReviewPhase } from '../components/game/ReviewPhase';
 import { VotingPhase } from '../components/game/VotingPhase';
 import { VoteResultsPhase } from '../components/game/VoteResultsPhase';
 import { GuessingPhase } from '../components/game/GuessingPhase';
+import { GuessingResultsPhase } from '../components/game/GuessingResultsPhase';
 import { GameOver } from '../components/game/GameOver';
 
 type GameScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Game'>;
@@ -151,6 +152,9 @@ export const GameScreen: React.FC<GameScreenProps> = ({ navigation, route }) => 
         setGamePhase('guessing');
         break;
       case 'guessing':
+        setGamePhase('guessingResults');
+        break;
+      case 'guessingResults':
         setGamePhase('ended');
         break;
     }
@@ -211,6 +215,14 @@ export const GameScreen: React.FC<GameScreenProps> = ({ navigation, route }) => 
           categoryItems={categoryData.items}
           onPhaseComplete={handlePhaseComplete}
           onPlayerComplete={handlePlayerComplete}
+          updatePlayer={updatePlayer}
+        />
+      )}
+      {gamePhase === 'guessingResults' && players.length > 0 && (
+        <GuessingResultsPhase
+          players={players}
+          selectedItem={selectedItem}
+          onPhaseComplete={handlePhaseComplete}
         />
       )}
       {gamePhase === 'ended' && players.length > 0 && (
