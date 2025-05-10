@@ -4,7 +4,6 @@ import {
   Text,
   View,
   TouchableOpacity,
-  ScrollView,
 } from 'react-native';
 import { Player } from '../../types/gameTypes';
 
@@ -63,31 +62,13 @@ export const GameOver: React.FC<GameOverProps> = ({
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Voting Results</Text>
-        <Text style={styles.sectionText}>
-          {correctlyIdentified ? 
-            'Team Not in the Dark correctly identified who was in the dark!' :
-            'Team Not in the Dark did not correctly identify who was in the dark.'}
-        </Text>
-        <ScrollView style={styles.playerList}>
-          {players.map((player, index) => (
-            <View key={index} style={styles.playerRow}>
-              <Text style={styles.playerName}>{player.name}</Text>
-              <Text style={styles.playerVotes}>Votes: {player.votes}</Text>
-            </View>
-          ))}
-        </ScrollView>
+        <Text style={styles.sectionTitle}>The Item Was:</Text>
+        <Text style={styles.itemText}>{selectedItem}</Text>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Guessing Results</Text>
-        <Text style={styles.sectionText}>
-          The item was: {selectedItem}
-        </Text>
-        <Text style={styles.sectionText}>
-          Players in the dark correctly guessed: {correctGuesses} out of {playersInTheDark.length}
-        </Text>
-        <ScrollView style={styles.playerList}>
+        <Text style={styles.sectionTitle}>Players In The Dark:</Text>
+        <View style={styles.playerList}>
           {playersInTheDark.map((player, index) => (
             <View key={index} style={styles.playerRow}>
               <Text style={styles.playerName}>{player.name}</Text>
@@ -99,7 +80,15 @@ export const GameOver: React.FC<GameOverProps> = ({
               </Text>
             </View>
           ))}
-        </ScrollView>
+        </View>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Most Voted Player:</Text>
+        <Text style={styles.playerName}>{mostVotedPlayer.name}</Text>
+        <Text style={styles.voteResult}>
+          {correctlyIdentified ? 'Correctly Identified!' : 'Not Correctly Identified'}
+        </Text>
       </View>
 
       <TouchableOpacity style={styles.playAgainButton} onPress={onPlayAgain}>
@@ -143,6 +132,9 @@ const styles = StyleSheet.create({
   },
   section: {
     marginBottom: 20,
+    backgroundColor: '#2a2a2a',
+    padding: 15,
+    borderRadius: 8,
   },
   sectionTitle: {
     fontSize: 20,
@@ -150,30 +142,26 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     marginBottom: 10,
   },
-  sectionText: {
-    fontSize: 16,
-    color: '#cccccc',
-    marginBottom: 10,
+  itemText: {
+    fontSize: 24,
+    color: '#4CAF50',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   playerList: {
-    maxHeight: 200,
+    marginTop: 10,
   },
   playerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#2a2a2a',
-    padding: 10,
-    borderRadius: 4,
-    marginBottom: 5,
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#333',
   },
   playerName: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#ffffff',
-  },
-  playerVotes: {
-    fontSize: 16,
-    color: '#cccccc',
   },
   playerGuess: {
     fontSize: 16,
@@ -183,6 +171,12 @@ const styles = StyleSheet.create({
   },
   incorrectGuess: {
     color: '#f44336',
+  },
+  voteResult: {
+    fontSize: 18,
+    color: '#4CAF50',
+    textAlign: 'center',
+    marginTop: 10,
   },
   playAgainButton: {
     backgroundColor: '#4CAF50',
