@@ -8,6 +8,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "build:ios": "eas build -p ios --profile preview",
+    "build:ios-production": "eas build -p ios --profile production",
     "build:android": "eas build -p android --profile preview",
     "submit:testflight": "eas submit -p ios --latest --profile preview"
   },
