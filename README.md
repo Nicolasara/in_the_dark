@@ -37,7 +37,7 @@ The app utilizes a dark theme for its user interface and is built with React Nat
     *   "In the Loop" players win if they identify all "In the Dark" players before the item is guessed or if the "In the Dark" players fail to guess the item.
 *   **Local Multiplayer:** Designed for a group of 3 or more people playing together on one device.
 
-## �� Project Structure
+## 📦 Project Structure
 
 *   `assets/`: Contains static assets like images, fonts, etc.
 *   `src/`: Contains the main source code for the application.
@@ -75,3 +75,36 @@ Ensure you have Node.js and npm/yarn installed. You'll also need the Expo Go app
         ```
 
 Follow the instructions in the terminal to open the app on your device or emulator. 
+
+### 📱 Building and Submitting for Testing
+
+To build your app for testing or to submit it to TestFlight, you'll use EAS (Expo Application Services). Ensure you have the [EAS CLI installed and configured](https://docs.expo.dev/eas/getting-started/) and that you are logged in (`eas login`).
+
+Your build configurations (profiles) are managed in the `eas.json` file. The commands below assume a build profile named `preview` is set up for TestFlight/internal distribution.
+
+#### Building the App
+
+*   **For iOS (e.g., for TestFlight):**
+    ```sh
+    npm run build:ios
+    ```
+    This typically uses a command like `eas build -p ios --profile preview`.
+
+*   **For Android (e.g., for internal testing APK/AAB):**
+    ```sh
+    npm run build:android
+    ```
+    This typically uses a command like `eas build -p android --profile preview`.
+
+After running the build command, EAS will queue your build and provide a link to monitor its progress.
+
+#### Submitting to TestFlight (iOS)
+
+Once your iOS build is successfully completed, you can submit it to TestFlight:
+
+```sh
+npm run submit:testflight
+```
+This script typically runs `eas submit -p ios --latest --profile preview` (or similar, pointing to the build you want to submit). The `--latest` flag will attempt to submit the most recent successful build for the specified platform and profile.
+
+EAS Submit will guide you through the submission steps. Ensure your Apple Developer account credentials and app configuration (bundle identifier, etc.) are correctly set up in EAS and App Store Connect. 
