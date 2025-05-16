@@ -62,7 +62,7 @@ Ensure you have Node.js and npm/yarn installed. You'll also need the Expo Go app
 1.  Clone the repository:
     ```sh
     git clone <repository-url>
-    cd in_the_dark_new
+    cd in_the_dark
     ```
 2.  Install NPM packages:
     ```sh
