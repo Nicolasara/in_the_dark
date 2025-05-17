@@ -45,9 +45,9 @@ The app utilizes a dark theme for its user interface and is built with React Nat
 - `src/`: Contains the main source code for the application.
   - `components/`: Reusable UI components.
     - `common/`: General-purpose common components.
-    - `game/`: Components specific to the game logic or UI.
   - `data/`: Likely contains game data, configurations, or static content.
   - `screens/`: Contains the main screen components for navigation.
+    - `game/`: Game-specific screens or phases.
   - `types/`: TypeScript type definitions.
 - `App.tsx`: The main entry point of the application, setting up navigation.
 - `app.json`: Expo configuration file.

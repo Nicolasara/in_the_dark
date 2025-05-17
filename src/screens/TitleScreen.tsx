@@ -1,9 +1,12 @@
-import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../App';
+import React from "react";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../App";
 
-type TitleScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Title'>;
+type TitleScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  "Title"
+>;
 
 interface TitleScreenProps {
   navigation: TitleScreenNavigationProp;
@@ -16,10 +19,10 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({ navigation }) => {
         <Text style={styles.title}>In The Dark</Text>
         <Text style={styles.subtitle}>Local Multiplayer Game</Text>
       </View>
-      
-      <TouchableOpacity 
-        style={styles.startButton} 
-        onPress={() => navigation.navigate('PlayerSelection')}
+
+      <TouchableOpacity
+        style={styles.startButton}
+        onPress={() => navigation.navigate("PlayerSelection")}
       >
         <Text style={styles.startButtonText}>Start Game</Text>
       </TouchableOpacity>
@@ -30,41 +33,41 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a1a1a',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    backgroundColor: "#1a1a1a",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingVertical: 100,
   },
   titleContainer: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   title: {
     fontSize: 48,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    fontWeight: "bold",
+    color: "#ffffff",
+    textShadowColor: "rgba(0, 0, 0, 0.75)",
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 5,
   },
   subtitle: {
     fontSize: 24,
-    color: '#cccccc',
+    color: "#cccccc",
     marginTop: 10,
   },
   startButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: "#4CAF50",
     paddingHorizontal: 40,
     paddingVertical: 15,
     borderRadius: 25,
     elevation: 5,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
   startButtonText: {
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
-}); 
+});
