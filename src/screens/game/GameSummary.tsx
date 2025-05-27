@@ -1,47 +1,42 @@
-import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-} from 'react-native';
-import { Player } from '../../types/gameTypes';
+import React from "react";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { Player } from "../../types/gameTypes";
 
-interface GameOverProps {
+interface GameSummaryProps {
   players: Player[];
   selectedItem: string;
   onPlayAgain: () => void;
 }
 
-export const GameOver: React.FC<GameOverProps> = ({
+export const GameSummary: React.FC<GameSummaryProps> = ({
   players,
   selectedItem,
   onPlayAgain,
 }) => {
   // Find players in the dark
-  const playersInTheDark = players.filter(player => player.isInTheDark);
-  const playersNotInTheDark = players.filter(player => !player.isInTheDark);
+  const playersInTheDark = players.filter((player) => player.isInTheDark);
+  const playersNotInTheDark = players.filter((player) => !player.isInTheDark);
 
   // Check if team not in the dark correctly identified who was in the dark
-  const mostVotedPlayer = players.reduce((prev, current) => 
-    (current.votes > prev.votes) ? current : prev
+  const mostVotedPlayer = players.reduce((prev, current) =>
+    current.votes > prev.votes ? current : prev
   );
   const correctlyIdentified = mostVotedPlayer.isInTheDark;
 
   // Check if players in the dark correctly guessed the item
-  const correctGuesses = playersInTheDark.filter(player => 
-    player.answer === selectedItem
+  const correctGuesses = playersInTheDark.filter(
+    (player) => player.answer === selectedItem
   ).length;
   const allGuessedCorrectly = correctGuesses === playersInTheDark.length;
 
   // Determine the winner
-  let result: 'notInTheDark' | 'inTheDark' | 'tie';
+  let result: "notInTheDark" | "inTheDark" | "tie";
   if (correctlyIdentified && allGuessedCorrectly) {
-    result = 'tie';
+    result = "tie";
   } else if (correctlyIdentified) {
-    result = 'notInTheDark';
+    result = "notInTheDark";
   } else {
-    result = 'inTheDark';
+    result = "inTheDark";
   }
 
   return (
@@ -50,14 +45,18 @@ export const GameOver: React.FC<GameOverProps> = ({
 
       <View style={styles.resultBox}>
         <Text style={styles.resultTitle}>
-          {result === 'notInTheDark' ? 'Team Not in the Dark Wins!' :
-           result === 'inTheDark' ? 'Team In the Dark Wins!' :
-           'It\'s a Tie!'}
+          {result === "notInTheDark"
+            ? "Team Not in the Dark Wins!"
+            : result === "inTheDark"
+            ? "Team In the Dark Wins!"
+            : "It's a Tie!"}
         </Text>
         <Text style={styles.resultSubtitle}>
-          {result === 'notInTheDark' ? 'They caught the players in the dark!' :
-           result === 'inTheDark' ? 'They successfully stayed hidden!' :
-           'Both teams achieved their goals!'}
+          {result === "notInTheDark"
+            ? "They caught the players in the dark!"
+            : result === "inTheDark"
+            ? "They successfully stayed hidden!"
+            : "Both teams achieved their goals!"}
         </Text>
       </View>
 
@@ -72,11 +71,15 @@ export const GameOver: React.FC<GameOverProps> = ({
           {playersInTheDark.map((player, index) => (
             <View key={index} style={styles.playerRow}>
               <Text style={styles.playerName}>{player.name}</Text>
-              <Text style={[
-                styles.playerGuess,
-                player.answer === selectedItem ? styles.correctGuess : styles.incorrectGuess
-              ]}>
-                {player.answer || 'No guess'}
+              <Text
+                style={[
+                  styles.playerGuess,
+                  player.answer === selectedItem
+                    ? styles.correctGuess
+                    : styles.incorrectGuess,
+                ]}
+              >
+                {player.answer || "No guess"}
               </Text>
             </View>
           ))}
@@ -87,7 +90,9 @@ export const GameOver: React.FC<GameOverProps> = ({
         <Text style={styles.sectionTitle}>Most Voted Player:</Text>
         <Text style={styles.playerName}>{mostVotedPlayer.name}</Text>
         <Text style={styles.voteResult}>
-          {correctlyIdentified ? 'Correctly Identified!' : 'Not Correctly Identified'}
+          {correctlyIdentified
+            ? "Correctly Identified!"
+            : "Not Correctly Identified"}
         </Text>
       </View>
 
@@ -102,17 +107,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: "#1a1a1a",
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#ffffff",
+    textAlign: "center",
     marginTop: 20,
   },
   resultBox: {
-    backgroundColor: '#2a2a2a',
+    backgroundColor: "#2a2a2a",
     padding: 20,
     borderRadius: 8,
     marginTop: 20,
@@ -120,74 +125,74 @@ const styles = StyleSheet.create({
   },
   resultTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#ffffff",
+    textAlign: "center",
   },
   resultSubtitle: {
     fontSize: 18,
-    color: '#cccccc',
-    textAlign: 'center',
+    color: "#cccccc",
+    textAlign: "center",
     marginTop: 10,
   },
   section: {
     marginBottom: 20,
-    backgroundColor: '#2a2a2a',
+    backgroundColor: "#2a2a2a",
     padding: 15,
     borderRadius: 8,
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#ffffff',
+    fontWeight: "bold",
+    color: "#ffffff",
     marginBottom: 10,
   },
   itemText: {
     fontSize: 24,
-    color: '#4CAF50',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    color: "#4CAF50",
+    fontWeight: "bold",
+    textAlign: "center",
   },
   playerList: {
     marginTop: 10,
   },
   playerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#333',
+    borderBottomColor: "#333",
   },
   playerName: {
     fontSize: 18,
-    color: '#ffffff',
+    color: "#ffffff",
   },
   playerGuess: {
     fontSize: 16,
   },
   correctGuess: {
-    color: '#4CAF50',
+    color: "#4CAF50",
   },
   incorrectGuess: {
-    color: '#f44336',
+    color: "#f44336",
   },
   voteResult: {
     fontSize: 18,
-    color: '#4CAF50',
-    textAlign: 'center',
+    color: "#4CAF50",
+    textAlign: "center",
     marginTop: 10,
   },
   playAgainButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: "#4CAF50",
     padding: 15,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 20,
   },
   playAgainButtonText: {
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
-}); 
+});

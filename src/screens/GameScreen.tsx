@@ -13,7 +13,7 @@ import { VotingPhase } from "./game/VotingPhase";
 import { VoteResultsPhase } from "./game/VoteResultsPhase";
 import { GuessingPhase } from "./game/GuessingPhase";
 import { GuessingResultsPhase } from "./game/GuessingResultsPhase";
-import { GameOver } from "./game/GameOver";
+import { GameSummary } from "./game/GameSummary";
 
 type GameScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -238,7 +238,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
         />
       )}
       {gamePhase === "ended" && players.length > 0 && (
-        <GameOver
+        <GameSummary
           players={players}
           selectedItem={selectedItem}
           onPlayAgain={() => navigation.navigate("Title")}
