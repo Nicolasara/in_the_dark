@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
   View,
   TouchableOpacity,
   ScrollView,
-} from 'react-native';
-import { Player } from '../../types/gameTypes';
+} from "react-native";
+import { Player } from "../../types/gameTypes";
 
 interface GuessingPhaseProps {
   players: Player[];
@@ -34,14 +34,15 @@ export const GuessingPhase: React.FC<GuessingPhaseProps> = ({
   useEffect(() => {
     // Generate 5 random items from the category (excluding the selected item)
     const otherItems = categoryItems
-      .filter(item => item !== selectedItem)
+      .filter((item) => item !== selectedItem)
       .sort(() => Math.random() - 0.5)
       .slice(0, 5);
-    
+
     // Add the selected item and shuffle
-    const allOptions = [...otherItems, selectedItem]
-      .sort(() => Math.random() - 0.5);
-    
+    const allOptions = [...otherItems, selectedItem].sort(
+      () => Math.random() - 0.5
+    );
+
     setOptions(allOptions);
   }, [selectedItem, categoryItems]);
 
@@ -108,19 +109,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: "#1a1a1a",
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#ffffff",
+    textAlign: "center",
     marginTop: 20,
   },
   subtitle: {
     fontSize: 24,
-    color: '#cccccc',
-    textAlign: 'center',
+    color: "#cccccc",
+    textAlign: "center",
     marginTop: 10,
     marginBottom: 30,
   },
@@ -128,33 +129,33 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   optionButton: {
-    backgroundColor: '#2a2a2a',
+    backgroundColor: "#2a2a2a",
     padding: 15,
     borderRadius: 8,
     marginBottom: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   selectedOption: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: "#4CAF50",
   },
   optionText: {
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   confirmButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: "#4CAF50",
     padding: 15,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 20,
   },
   disabledConfirmButton: {
-    backgroundColor: '#666666',
+    backgroundColor: "#666666",
   },
   confirmButtonText: {
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
-}); 
+});

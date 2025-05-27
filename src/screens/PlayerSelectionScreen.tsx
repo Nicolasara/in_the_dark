@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,37 +7,47 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
-} from 'react-native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '../../App';
+} from "react-native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RouteProp } from "@react-navigation/native";
+import { RootStackParamList } from "../../App";
 
-type PlayerSelectionScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'PlayerSelection'>;
-type PlayerSelectionScreenRouteProp = RouteProp<RootStackParamList, 'PlayerSelection'>;
+type PlayerSelectionScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  "PlayerSelection"
+>;
+type PlayerSelectionScreenRouteProp = RouteProp<
+  RootStackParamList,
+  "PlayerSelection"
+>;
 
 interface PlayerSelectionScreenProps {
   navigation: PlayerSelectionScreenNavigationProp;
   route: PlayerSelectionScreenRouteProp;
 }
 
-export const PlayerSelectionScreen: React.FC<PlayerSelectionScreenProps> = ({ navigation }) => {
-  const defaultPlayers = __DEV__ ? ['Alice', 'Bob', 'Charlie', 'David', 'Eve'] : [];
+export const PlayerSelectionScreen: React.FC<PlayerSelectionScreenProps> = ({
+  navigation,
+}) => {
+  const defaultPlayers = __DEV__
+    ? ["Alice", "Bob", "Charlie", "David", "Eve"]
+    : [];
   const [players, setPlayers] = useState<string[]>(defaultPlayers);
-  const [newPlayerName, setNewPlayerName] = useState('');
+  const [newPlayerName, setNewPlayerName] = useState("");
 
   const addPlayer = () => {
-    if (newPlayerName.trim() === '') {
-      Alert.alert('Error', 'Please enter a player name');
+    if (newPlayerName.trim() === "") {
+      Alert.alert("Error", "Please enter a player name");
       return;
     }
 
     if (players.includes(newPlayerName.trim())) {
-      Alert.alert('Error', 'This player name already exists');
+      Alert.alert("Error", "This player name already exists");
       return;
     }
 
     setPlayers([...players, newPlayerName.trim()]);
-    setNewPlayerName('');
+    setNewPlayerName("");
   };
 
   const removePlayer = (index: number) => {
@@ -48,10 +58,10 @@ export const PlayerSelectionScreen: React.FC<PlayerSelectionScreenProps> = ({ na
 
   const startGame = () => {
     if (players.length < 3) {
-      Alert.alert('Error', 'You need at least 3 players to start the game');
+      Alert.alert("Error", "You need at least 3 players to start the game");
       return;
     }
-    navigation.navigate('CategorySelection', { players });
+    navigation.navigate("CategorySelection", { players });
   };
 
   return (
@@ -88,7 +98,10 @@ export const PlayerSelectionScreen: React.FC<PlayerSelectionScreenProps> = ({ na
       </ScrollView>
 
       <TouchableOpacity
-        style={[styles.startButton, players.length < 3 && styles.startButtonDisabled]}
+        style={[
+          styles.startButton,
+          players.length < 3 && styles.startButtonDisabled,
+        ]}
         onPress={startGame}
         disabled={players.length < 3}
       >
@@ -101,81 +114,81 @@ export const PlayerSelectionScreen: React.FC<PlayerSelectionScreenProps> = ({ na
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: "#1a1a1a",
     padding: 20,
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#ffffff",
+    textAlign: "center",
     marginVertical: 20,
   },
   subtitle: {
     fontSize: 18,
-    color: '#ffffff',
-    textAlign: 'center',
+    color: "#ffffff",
+    textAlign: "center",
     marginBottom: 20,
   },
   inputContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 20,
   },
   input: {
     flex: 1,
-    backgroundColor: '#333',
+    backgroundColor: "#333",
     borderRadius: 8,
     padding: 12,
-    color: '#ffffff',
+    color: "#ffffff",
     marginRight: 10,
   },
   addButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: "#4CAF50",
     padding: 12,
     borderRadius: 8,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   addButtonText: {
-    color: '#ffffff',
-    fontWeight: 'bold',
+    color: "#ffffff",
+    fontWeight: "bold",
   },
   playerList: {
     flex: 1,
   },
   playerItem: {
-    flexDirection: 'row',
-    backgroundColor: '#333',
+    flexDirection: "row",
+    backgroundColor: "#333",
     padding: 15,
     borderRadius: 8,
     marginBottom: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   playerName: {
     flex: 1,
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 18,
   },
   removeButton: {
     padding: 5,
   },
   removeButtonText: {
-    color: '#ff4444',
+    color: "#ff4444",
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   startButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: "#4CAF50",
     padding: 15,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 20,
   },
   startButtonDisabled: {
-    backgroundColor: '#666',
+    backgroundColor: "#666",
   },
   startButtonText: {
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
-}); 
+});

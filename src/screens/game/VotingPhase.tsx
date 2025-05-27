@@ -1,11 +1,6 @@
-import React, { useState } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-} from 'react-native';
-import { Player } from '../../types/gameTypes';
+import React, { useState } from "react";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { Player } from "../../types/gameTypes";
 
 interface VotingPhaseProps {
   players: Player[];
@@ -22,7 +17,9 @@ export const VotingPhase: React.FC<VotingPhaseProps> = ({
   onPlayerComplete,
   submitVote,
 }) => {
-  const [selectedPlayerIndex, setSelectedPlayerIndex] = useState<number | null>(null);
+  const [selectedPlayerIndex, setSelectedPlayerIndex] = useState<number | null>(
+    null
+  );
 
   const currentPlayer = players[currentPlayerIndex];
   const hasVoted = currentPlayer.hasVoted;
@@ -46,9 +43,7 @@ export const VotingPhase: React.FC<VotingPhaseProps> = ({
           ? "You've already voted. Waiting for other players..."
           : `It's ${currentPlayer.name}'s turn to vote`}
       </Text>
-      <Text style={styles.instructions}>
-        Who do you think is in the dark?
-      </Text>
+      <Text style={styles.instructions}>Who do you think is in the dark?</Text>
 
       <View style={styles.playerList}>
         {players.map((player, index) => (
@@ -70,7 +65,8 @@ export const VotingPhase: React.FC<VotingPhaseProps> = ({
       <TouchableOpacity
         style={[
           styles.confirmButton,
-          (selectedPlayerIndex === null || hasVoted) && styles.disabledConfirmButton,
+          (selectedPlayerIndex === null || hasVoted) &&
+            styles.disabledConfirmButton,
         ]}
         onPress={handleConfirmVote}
         disabled={selectedPlayerIndex === null || hasVoted}
@@ -85,64 +81,64 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: "#1a1a1a",
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#ffffff",
+    textAlign: "center",
     marginTop: 20,
   },
   subtitle: {
     fontSize: 24,
-    color: '#cccccc',
-    textAlign: 'center',
+    color: "#cccccc",
+    textAlign: "center",
     marginTop: 10,
   },
   instructions: {
     fontSize: 18,
-    color: '#ffffff',
-    textAlign: 'center',
+    color: "#ffffff",
+    textAlign: "center",
     marginTop: 20,
     marginBottom: 30,
   },
   playerList: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   playerButton: {
-    backgroundColor: '#2a2a2a',
+    backgroundColor: "#2a2a2a",
     padding: 15,
     borderRadius: 8,
     marginBottom: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   playerButtonText: {
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   disabledButton: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: "#1a1a1a",
     opacity: 0.5,
   },
   selectedButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: "#4CAF50",
   },
   confirmButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: "#4CAF50",
     padding: 15,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 20,
   },
   disabledConfirmButton: {
-    backgroundColor: '#666666',
+    backgroundColor: "#666666",
   },
   confirmButtonText: {
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
-}); 
+});

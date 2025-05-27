@@ -1,12 +1,6 @@
-import React, { useState } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Modal,
-} from 'react-native';
-import { Player } from '../../types/gameTypes';
+import React, { useState } from "react";
+import { StyleSheet, Text, View, TouchableOpacity, Modal } from "react-native";
+import { Player } from "../../types/gameTypes";
 
 interface RevealPhaseProps {
   players: Player[];
@@ -35,14 +29,14 @@ export const RevealPhase: React.FC<RevealPhaseProps> = ({
     } else {
       setShowItemModal(true);
     }
-    
+
     updatePlayer(currentPlayerIndex, { hasSeenItem: true });
   };
 
   const handleModalClose = () => {
     setShowItemModal(false);
     setShowInDarkModal(false);
-    
+
     if (currentPlayerIndex === players.length - 1) {
       onPhaseComplete();
     } else {
@@ -54,14 +48,12 @@ export const RevealPhase: React.FC<RevealPhaseProps> = ({
     <View style={styles.container}>
       <Text style={styles.title}>Reveal Phase</Text>
       <Text style={styles.playerName}>{players[currentPlayerIndex].name}</Text>
-      
-      <TouchableOpacity 
-        style={styles.showItemButton} 
+
+      <TouchableOpacity
+        style={styles.showItemButton}
         onPress={showItemToPlayer}
       >
-        <Text style={styles.showItemButtonText}>
-          Show Information
-        </Text>
+        <Text style={styles.showItemButtonText}>Show Information</Text>
       </TouchableOpacity>
 
       {/* Modal for players who can see the item */}
@@ -75,7 +67,7 @@ export const RevealPhase: React.FC<RevealPhaseProps> = ({
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>The Item Is:</Text>
             <Text style={styles.modalItem}>{selectedItem}</Text>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.modalButton}
               onPress={handleModalClose}
             >
@@ -96,9 +88,10 @@ export const RevealPhase: React.FC<RevealPhaseProps> = ({
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>You are in the dark!</Text>
             <Text style={styles.modalDescription}>
-              You will need to figure out what the item is by asking questions and listening to other players' responses.
+              You will need to figure out what the item is by asking questions
+              and listening to other players' responses.
             </Text>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.modalButton}
               onPress={handleModalClose}
             >
@@ -118,71 +111,71 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#ffffff",
+    textAlign: "center",
     marginTop: 20,
   },
   playerName: {
     fontSize: 36,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#ffffff",
+    textAlign: "center",
     marginTop: 20,
   },
   showItemButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: "#4CAF50",
     padding: 15,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 40,
   },
   showItemButtonText: {
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   modalContainer: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalContent: {
-    backgroundColor: '#333',
+    backgroundColor: "#333",
     padding: 30,
     borderRadius: 12,
-    alignItems: 'center',
-    width: '80%',
+    alignItems: "center",
+    width: "80%",
   },
   modalTitle: {
     fontSize: 24,
-    color: '#ffffff',
+    color: "#ffffff",
     marginBottom: 20,
   },
   modalItem: {
     fontSize: 36,
-    color: '#4CAF50',
-    fontWeight: 'bold',
+    color: "#4CAF50",
+    fontWeight: "bold",
     marginBottom: 30,
   },
   modalDescription: {
     fontSize: 18,
-    color: '#ffffff',
-    textAlign: 'center',
+    color: "#ffffff",
+    textAlign: "center",
     marginVertical: 20,
     lineHeight: 24,
   },
   modalButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: "#4CAF50",
     padding: 15,
     borderRadius: 8,
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
   },
   modalButtonText: {
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
-}); 
+});

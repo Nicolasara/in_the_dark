@@ -1,11 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-} from 'react-native';
-import { Player } from '../../types/gameTypes';
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { Player } from "../../types/gameTypes";
 
 interface QuestionsPhaseProps {
   players: Player[];
@@ -35,13 +30,13 @@ export const QuestionsPhase: React.FC<QuestionsPhaseProps> = ({
         // Create array of possible targets (excluding the asker)
         const possibleTargets = players
           .map((_, index) => index)
-          .filter(index => index !== askerIndex);
-        
+          .filter((index) => index !== askerIndex);
+
         // Randomly select one target
         const randomIndex = Math.floor(Math.random() * possibleTargets.length);
         return possibleTargets[randomIndex];
       });
-      
+
       setQuestionAssignments(assignments);
     }
   }, []);
@@ -49,7 +44,10 @@ export const QuestionsPhase: React.FC<QuestionsPhaseProps> = ({
   const handleNextPlayer = () => {
     // Find the next valid asker
     let nextIndex = currentAskerIndex + 1;
-    while (nextIndex < players.length && questionAssignments[nextIndex] === -1) {
+    while (
+      nextIndex < players.length &&
+      questionAssignments[nextIndex] === -1
+    ) {
       nextIndex++;
     }
 
@@ -85,28 +83,27 @@ export const QuestionsPhase: React.FC<QuestionsPhaseProps> = ({
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Question Phase</Text>
-      
+
       <View style={styles.playerInfo}>
         <Text style={styles.playerLabel}>Asking:</Text>
         <Text style={styles.playerName}>{currentAsker.name}</Text>
-        
+
         <Text style={styles.playerLabel}>To:</Text>
         <Text style={styles.playerName}>{currentTarget.name}</Text>
       </View>
-      
+
       {!currentAsker.question ? (
-        <TouchableOpacity 
-          style={styles.actionButton} 
-          onPress={assignQuestion}
-        >
+        <TouchableOpacity style={styles.actionButton} onPress={assignQuestion}>
           <Text style={styles.actionButtonText}>Get Question</Text>
         </TouchableOpacity>
       ) : (
         <View style={styles.questionContainer}>
-          <Text style={styles.questionLabel}>Question for {currentTarget.name}:</Text>
+          <Text style={styles.questionLabel}>
+            Question for {currentTarget.name}:
+          </Text>
           <Text style={styles.question}>{currentAsker.question}</Text>
-          <TouchableOpacity 
-            style={styles.actionButton} 
+          <TouchableOpacity
+            style={styles.actionButton}
             onPress={handleNextPlayer}
           >
             <Text style={styles.actionButtonText}>Next Player</Text>
@@ -121,57 +118,57 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: "#1a1a1a",
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#ffffff",
+    textAlign: "center",
     marginTop: 20,
   },
   playerInfo: {
     marginTop: 40,
-    alignItems: 'center',
+    alignItems: "center",
   },
   playerLabel: {
     fontSize: 18,
-    color: '#cccccc',
+    color: "#cccccc",
     marginBottom: 5,
   },
   playerName: {
     fontSize: 36,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#ffffff",
+    textAlign: "center",
     marginBottom: 20,
   },
   questionContainer: {
-    backgroundColor: '#2a2a2a',
+    backgroundColor: "#2a2a2a",
     padding: 20,
     borderRadius: 12,
     marginTop: 40,
   },
   questionLabel: {
     fontSize: 18,
-    color: '#cccccc',
+    color: "#cccccc",
     marginBottom: 10,
   },
   question: {
     fontSize: 24,
-    color: '#ffffff',
-    fontWeight: 'bold',
+    color: "#ffffff",
+    fontWeight: "bold",
   },
   actionButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: "#4CAF50",
     padding: 15,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 40,
   },
   actionButtonText: {
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
-}); 
+});
