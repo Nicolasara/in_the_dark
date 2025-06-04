@@ -3,7 +3,6 @@ import {
   GameModeConfig,
   TeamMode,
   IndividualMode,
-  SinglePlayerMode,
 } from "../types/gameModes";
 
 export function calculateMaxInTheDarkPlayers(

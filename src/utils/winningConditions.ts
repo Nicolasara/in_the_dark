@@ -2,64 +2,83 @@ import { GameState, Player } from "../types/gameTypes";
 import {
   GameOutcome,
   PlayerResult,
-  WinningResult,
-  HalfWin,
+  PointResults,
 } from "../types/winningConditions";
 
 /**
  * Calculates the game outcomes based on the current game state.
- * This function determines the winning results for each player in the dark
+ * This function determines the point results for each player in the dark
  * based on whether they were caught, their knowledge of the secret, and the game mode.
  */
 export function calculateGameOutcomes(gameState: GameState): GameOutcome {
   const playersInTheDark = gameState.players.filter(
     (player) => player.isInTheDark
   );
-  const playerResults: PlayerResult[] = [];
-
-  // Find the player with the most votes
-  const mostVotedPlayer = gameState.players.reduce((prev, current) =>
-    current.votes > prev.votes ? current : prev
+  const inTheLoopPlayers = gameState.players.filter(
+    (player) => !player.isInTheDark
   );
 
-  // For each player in the dark, calculate their individual result
-  for (const player of playersInTheDark) {
-    const caughtByInTheLoop = player.id === mostVotedPlayer.id;
-    const knowsSecret = player.answer === gameState.secret;
+  // Find the player(s) with the most votes
+  const maxVotes = Math.max(...gameState.players.map((p) => p.votes));
+  const mostVotedPlayers = gameState.players.filter(
+    (p) => p.votes === maxVotes && maxVotes > 0
+  );
+  const caughtIds = new Set(mostVotedPlayers.map((p) => p.id));
 
-    let winningResult: WinningResult;
+  // Prepare per-player points
+  let inTheLoopPoints = 0;
+  const inTheDarkPoints: Record<string, number> = {};
+
+  // Determine if any in the dark player was caught
+  const anyCaught = playersInTheDark.some((p) => caughtIds.has(p.id));
+
+  // Assign points for each in the dark player
+  for (const player of playersInTheDark) {
+    const caughtByInTheLoop = caughtIds.has(player.id);
+    const knowsSecret = player.answer === gameState.secret;
+    let points = 0;
 
     if (caughtByInTheLoop) {
       if (knowsSecret) {
-        winningResult = { type: "tie", points: 1 };
+        // Tie: both sides get 1 point
+        points = 1;
+        inTheLoopPoints += 1;
       } else {
-        winningResult = { type: "loss", points: 0 };
+        // In the loop win: in the loop gets 1 point, in the dark gets 0
+        points = 0;
+        inTheLoopPoints += 1;
       }
     } else {
       if (knowsSecret) {
-        winningResult = { type: "double", points: 2 };
+        // In the dark double win: in the dark gets 2 points
+        points = 2;
       } else {
-        winningResult = { type: "regular", points: 1 };
+        // In the dark win: in the dark gets 1 point
+        points = 1;
       }
     }
-
-    playerResults.push({
-      playerId: player.id,
-      caughtByInTheLoop,
-      knowsSecret,
-      winningResult,
-    });
+    inTheDarkPoints[player.id] = points;
   }
 
-  // If any player in the dark was caught, other players in the dark get half wins
-  if (playerResults.some((result) => result.caughtByInTheLoop)) {
-    playerResults.forEach((result) => {
-      if (!result.caughtByInTheLoop) {
-        const halfWin: HalfWin = { type: "half", points: 0.5 };
-        result.winningResult = halfWin;
+  // If any in the dark player was caught, others get half win (0.5)
+  if (anyCaught) {
+    for (const player of playersInTheDark) {
+      if (!caughtIds.has(player.id)) {
+        inTheDarkPoints[player.id] = 0.5;
       }
-    });
+    }
   }
+
+  // Build playerResults
+  const playerResults: PlayerResult[] = playersInTheDark.map((player) => ({
+    playerId: player.id,
+    caughtByInTheLoop: caughtIds.has(player.id),
+    knowsSecret: player.answer === gameState.secret,
+    pointResults: {
+      inTheLoopPoints,
+      inTheDarkPoints: { ...inTheDarkPoints },
+    },
+  }));
 
   return { playerResults };
 }
