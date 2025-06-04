@@ -1,0 +1,13 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: Provide documentation for better context on project, -such as project-specific terminology and folder-specific information.
+globs: *.md
+---
+- Always read the markdown file in a specific folder if it exists before looking at any other file in that folder or beginning work in that folder.
+- Check corresponding markdown files and update them accordingly with any local changes that were made.
+- Check the terminology.md file for relevant terminology for this project.
+- When a folder gets sufficiently complex or large enough create a markdown file and list any relevant information.
