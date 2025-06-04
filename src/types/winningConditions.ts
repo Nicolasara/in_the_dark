@@ -1,42 +1,16 @@
-export type WinType = "double" | "regular" | "half" | "tie" | "loss";
+import { GameState } from "./gameTypes";
 
-export interface BaseWinningResult {
-  type: WinType;
-  points: number;
+export interface PointResults {
+  inTheLoopPoints: number;
+  inTheDarkPoints: Record<string, number>; // playerId -> points
+  // Optionally, add a description or notes field for clarity in test data
 }
-
-export interface DoubleWin extends BaseWinningResult {
-  type: "double";
-  points: 2;
-}
-
-export interface RegularWin extends BaseWinningResult {
-  type: "regular";
-  points: 1;
-}
-
-export interface HalfWin extends BaseWinningResult {
-  type: "half";
-  points: 0.5;
-}
-
-export interface Tie extends BaseWinningResult {
-  type: "tie";
-  points: 1;
-}
-
-export interface Loss extends BaseWinningResult {
-  type: "loss";
-  points: 0;
-}
-
-export type WinningResult = DoubleWin | RegularWin | HalfWin | Tie | Loss;
 
 export interface PlayerResult {
   playerId: string;
   caughtByInTheLoop: boolean;
   knowsSecret: boolean;
-  winningResult: WinningResult;
+  pointResults: PointResults;
 }
 
 export interface GameOutcome {
