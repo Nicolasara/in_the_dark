@@ -1,0 +1,11 @@
+---
+description: 
+globs: src/**/*.test.ts
+alwaysApply: false
+---
+---
+description: Place tests in the same directory as the code it is testing.
+globs: src/**/*.test.ts
+---
+- Please test in the same directory as the code is testing.
+- Name tests with the same name as the file it is testing with the extention .test.ts
