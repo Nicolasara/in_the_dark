@@ -11,11 +11,11 @@ This document defines key terms and concepts specific to the "In The Dark" game 
 
 ### Game Modes
 
-- **Single Player Mode**: Only one player is "in the dark"
-- **Team Mode**: Multiple players are "in the dark" and work together
+- **Single Player Mode**: Only one player is "in the dark" (Note: This does not mean the game is played with only one person. The minimum number of players for single in the dark mode is three. "Single player" refers to the number of players in the dark, not the total number of players.)
+- **Team Mode**: Multiple players are "in the dark" and work together (Minimum total players: four)
   - **Known Teammates**: Players know who their teammates are
   - **Unknown Teammates**: Players don't know who their teammates are
-- **Individual Mode**: Multiple players are "in the dark" but play independently
+- **Individual Mode**: Multiple players are "in the dark" but play independently (Minimum total players: four)
 
 ### Game Phases
 
@@ -51,3 +51,8 @@ This document defines key terms and concepts specific to the "In The Dark" game 
 - **Game Mode**: Configuration determining how the game is played (Single, Team, or Individual)
 - **Game Outcome**: The final results for each player including their win type and points
 - **Player Result**: Individual outcome for a player including whether they were caught and knew the secret
+
+## Notes
+
+- The minimum number of players for single in the dark mode is three.
+- The minimum number of players for team or individual mode (multiple in the dark) is four.

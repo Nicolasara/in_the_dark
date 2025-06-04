@@ -11,48 +11,47 @@ The game has four possible outcomes based on two key factors:
 
 ### Outcome Hierarchy
 
-1. **Double Win** (Highest)
+1. **In The Dark Double Win** (Highest)
 
    - Players are NOT caught by those in the loop
    - Players know the secret
-   - This is considered a "perfect win" with double points
-   - Note: Points system is planned for future implementation
+   - Points: +2 points for In The Dark team
 
-2. **Regular Win**
+2. **In The Dark Win**
 
    - Players are NOT caught by those in the loop
    - Players do NOT know the secret
-   - The "in the dark" players win
+   - Points: +1 point for In The Dark team
 
-3. **Regular Loss**
+3. **In The Loop Win**
 
    - Players ARE caught by those in the loop
    - Players do NOT know the secret
-   - The "in the loop" players win
+   - Points: +1 point for In The Loop team
 
 4. **Tie** (Lowest)
    - Players ARE caught by those in the loop
    - Players know the secret
-   - This results in a tie between both groups
+   - Points: +1 point for both teams
 
 ### Winning Conditions Flow Diagram
 
 ```mermaid
 flowchart TD
-    Start[Game Start] --> Caught{Caught by In The Loop?}
+    Start[Game Start] --> Caught{In The Dark Team Caught by In The Loop?}
 
     Caught -->|Yes| KnowSecret1{Know the Secret?}
     Caught -->|No| KnowSecret2{Know the Secret?}
 
-    KnowSecret1 -->|Yes| Tie[Tie]
-    KnowSecret1 -->|No| RegularLoss[Regular Loss In The Loop Wins]
+    KnowSecret1 -->|Yes| Tie[Tie<br>+1 point each]
+    KnowSecret1 -->|No| InTheLoopWin[In The Loop Win<br>+1 point In The Loop]
 
-    KnowSecret2 -->|Yes| DoubleWin[Double Win Perfect Victory]
-    KnowSecret2 -->|No| RegularWin[Regular Win In The Dark Wins]
+    KnowSecret2 -->|Yes| InTheDarkDoubleWin[In The Dark Double Win<br>+2 points In The Dark]
+    KnowSecret2 -->|No| InTheDarkWin[In The Dark Win<br>+1 point In The Dark]
 
-    style DoubleWin fill:#90EE90,stroke:#006400,color:#333333
-    style RegularWin fill:#98FB98,stroke:#006400,color:#333333
-    style RegularLoss fill:#FFB6C1,stroke:#8B0000,color:#333333
+    style InTheDarkDoubleWin fill:#4682B4,stroke:#2F4F4F,color:#FFFFFF
+    style InTheDarkWin fill:#87CEEB,stroke:#2F4F4F,color:#333333
+    style InTheLoopWin fill:#FFA500,stroke:#8B4513,color:#333333
     style Tie fill:#D3D3D3,stroke:#696969,color:#333333
 
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px,color:#333333;
@@ -65,10 +64,10 @@ flowchart TD
 - Only one player is "in the dark"
 - No special team rules or coordination needed
 - Standard winning conditions apply:
-  - Double Win: Not caught and knows the secret
-  - Regular Win: Not caught and doesn't know the secret
-  - Regular Loss: Caught and doesn't know the secret
-  - Tie: Caught but knows the secret
+  - In The Dark Double Win: Not caught and knows the secret (+2 points In The Dark)
+  - In The Dark Win: Not caught and doesn't know the secret (+1 point In The Dark)
+  - In The Loop Win: Caught and doesn't know the secret (+1 point In The Loop)
+  - Tie: Caught but knows the secret (+1 point each)
 
 ### 2. Team Mode
 
@@ -87,10 +86,10 @@ In this mode, all "in the dark" players work together as a single team.
   - They can discuss and share information to help each other figure out the secret but this must be done in a way that does not reveal the secret to the "in the loop" players
   - The team wins or loses together based on their collective performance
 - Same winning conditions as single player mode:
-  - Double Win: If "in the dark" team is caught and at least one player knows the secret
-  - Regular Win: If "in the dark" team is caught and no one knows the secret
-  - Regular Loss: If someone is caught and no one knows the secret
-  - Tie: If someone is caught but at least one player knows the secret
+  - In The Dark Double Win: If "in the dark" team is caught and at least one player knows the secret (+2 points In The Dark)
+  - In The Dark Win: If "in the dark" team is caught and no one knows the secret (+1 point In The Dark)
+  - In The Loop Win: If someone is caught and no one knows the secret (+1 point In The Loop)
+  - Tie: If someone is caught but at least one player knows the secret (+1 point each)
 
 #### 2.2 Unknown Team Members
 
@@ -106,10 +105,10 @@ In this mode, all "in the dark" players work together as a single team.
   - Players cannot openly collaborate as they don't know who their teammates are.
   - The team wins or loses together based on their collective performance.
 - Same winning conditions as single player mode:
-  - Double Win: If "in the dark" team is caught and at least one player knows the secret
-  - Regular Win: If "in the dark" team is caught and no one knows the secret
-  - Regular Loss: If someone is caught and no one knows the secret
-  - Tie: If someone is caught but at least one player knows the secret
+  - In The Dark Double Win: If "in the dark" team is caught and at least one player knows the secret (+2 points In The Dark)
+  - In The Dark Win: If "in the dark" team is caught and no one knows the secret (+1 point In The Dark)
+  - In The Loop Win: If someone is caught and no one knows the secret (+1 point In The Loop)
+  - Tie: If someone is caught but at least one player knows the secret (+1 point each)
 
 ### 3. Individual Mode
 
@@ -123,42 +122,43 @@ In this mode, each "in the dark" player plays independently, with winning condit
 
 ```mermaid
 flowchart TD
-    Start[Game Start] --> WhoCaught{Who was Caught?}
+    Start[Game Start] --> Caught{In The Dark Team Caught by In The Loop?}
 
-    WhoCaught -->|In The Loop| KnowSecret1{Know the Secret?}
-    WhoCaught -->|In The Dark Other Player| KnowSecret2{Know the Secret?}
-    WhoCaught -->|In The Dark Self| KnowSecret3{Know the Secret?}
+    Caught -->|Yes| InTheLoopWin[In The Loop Win<br>+1 point In The Loop]
+    Caught -->|No| KnowSecret2{"Know the Secret?<br>(per player)"}
 
-    KnowSecret1 -->|Yes| DoubleWin[Double Win Perfect Victory]
-    KnowSecret1 -->|No| RegularWin[Regular Win In The Dark Wins]
+    InTheLoopWin --> PlayerCaught{Was this player caught?}
+    PlayerCaught -->|Yes| KnowSecret1{"Know the Secret?<br>(per player)"}
+    PlayerCaught -->|No| HalfPoint[+0.5 points for player<br>who wasn't caught] --> KnowSecret1
 
-    KnowSecret2 -->|Yes| Tie[Tie]
-    KnowSecret2 -->|No| HalfWin[Half Win for unchosen player In The Dark and In The Loop Wins]
+    KnowSecret1 -->|Yes| SecretPoint[+1 point for player<br>who knows the secret]
+    KnowSecret1 -->|No| NoSecretPoint[+0 points for player<br>who doesn't know the secret]
 
-    KnowSecret3 -->|Yes| Tie[Tie]
-    KnowSecret3 -->|No| RegularLoss[Regular Loss In The Loop Wins]
+    KnowSecret2 -->|Yes| InTheDarkDoubleWin["In The Dark Double Win<br>+2 points In The Dark<br>for players who know secret"]
+    KnowSecret2 -->|No| InTheDarkWin["In The Dark Win<br>+1 point In The Dark<br>for players that don't know the secret"]
 
-    style DoubleWin fill:#90EE90,stroke:#006400,color:#333333
-    style RegularWin fill:#98FB98,stroke:#006400,color:#333333
-    style HalfWin fill:#FFD700,stroke:#B8860B,color:#333333
-    style RegularLoss fill:#FFB6C1,stroke:#8B0000,color:#333333
-    style Tie fill:#D3D3D3,stroke:#696969,color:#333333
+    style InTheDarkDoubleWin fill:#4682B4,stroke:#2F4F4F,color:#FFFFFF
+    style InTheDarkWin fill:#87CEEB,stroke:#2F4F4F,color:#333333
+    style HalfPoint fill:#B0E0E6,stroke:#2F4F4F,color:#333333
+    style InTheLoopWin fill:#FFA500,stroke:#8B4513,color:#333333
+    style SecretPoint fill:#D3D3D3,stroke:#696969,color:#333333
+    style NoSecretPoint fill:#D3D3D3,stroke:#696969,color:#333333
 
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px,color:#333333;
 ```
 
-1. If someone "in the loop" is caught:
-   - Double Win: If player knows the secret
-   - Regular Win: If player doesn't know the secret
-2. If another player "in the dark" is caught:
-   - Tie: If player knows the secret
-   - Half Win: If player doesn't know the secret (In The Loop wins, but player gets partial credit)
-3. If the player themselves is caught:
-   - Tie: If they know the secret
-   - Regular Loss: If they don't know the secret
+1. If caught by someone in the loop:
+   - In The Dark Double Win: If player knows the secret (+2 points In The Dark)
+   - In The Dark Win: If player doesn't know the secret (+1 point In The Dark)
+2. If not caught by someone in the loop:
+   - If caught in the dark:
+     - Tie: If player knows the secret (+1 point each)
+     - In The Dark Half Win: If player doesn't know the secret (+0.5 points In The Dark)
+   - If not caught in the dark:
+     - In The Dark Win: If player doesn't know the secret (+1 point In The Dark)
 
 - Multiple winners possible if multiple players achieve the same outcome
-- Note: Half Win is tracked for future points system implementation
+- Points are tracked for future implementation of a scoring system
 
 ## Implementation Considerations
 
@@ -205,8 +205,8 @@ flowchart TD
    - Need to show:
      - Who was caught and their role
      - Who knew the secret
-     - Final outcome (Double Win, Regular Win, Half Win, Regular Loss, or Tie)
-   - For Individual mode: Show individual results and any Half Wins
+     - Final outcome (In The Dark Double Win, In The Dark Win, In The Dark Half Win, In The Loop Win, or Tie)
+   - For Individual mode: Show individual results and any In The Dark Half Wins
    - For Team mode: Show team results
 
 ### Technical Requirements
@@ -229,33 +229,33 @@ flowchart TD
    - Support for multiple player displays
    - Team collaboration interface
    - Results display for different outcomes
-   - Half Win tracking and display
+   - In The Dark Half Win tracking and display
 
 4. New winning condition logic
 
    - Mode-specific condition checking
-   - Half Win implementation
+   - In The Dark Half Win implementation
    - Team vs Individual outcome determination
 
 5. Modified scoring system (for future implementation)
 
-   - Double Win points
-   - Regular Win points
-   - Half Win points
+   - In The Dark Double Win points
+   - In The Dark Win points
+   - In The Dark Half Win points
    - Tie handling
 
 6. Updated game summary display
    - Show all relevant outcomes
    - Display team results
    - Show individual achievements
-   - Track and display Half Wins
+   - Track and display In The Dark Half Wins
 
 ## Future Considerations
 
 1. Points System Implementation
 
-   - Double Win: 2x points
-   - Regular Win: 1x points
-   - Half Win: 0.5x points
+   - In The Dark Double Win: 2x points
+   - In The Dark Win: 1x points
+   - In The Dark Half Win: 0.5x points
    - Tie: 1x points for everyone
    - Team mode point distribution
