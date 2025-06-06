@@ -1,8 +1,8 @@
 import {
   GameMode,
-  GameModeConfig,
   TeamMode,
   IndividualMode,
+  GameModeType,
 } from "../types/gameModes";
 
 export function calculateMaxInTheDarkPlayers(
@@ -23,6 +23,12 @@ export function calculateMaxInTheDarkPlayers(
       // For individual mode, we can have equal numbers
       return Math.floor(totalPlayers / 2);
   }
+}
+
+export interface GameModeConfig {
+  type: GameModeType;
+  totalPlayers: number;
+  knownTeammates?: boolean; // Only used for team mode
 }
 
 export function createGameMode(config: GameModeConfig): GameMode {
