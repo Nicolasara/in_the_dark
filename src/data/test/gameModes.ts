@@ -27,30 +27,26 @@ export const gameModeSingleInTheDark6Players: GameModeConfig = {
 
 // Team mode, known teammates (minimum valid)
 export const gameModeTeamKnown4Players: GameModeConfig = {
-  type: "team",
+  type: "teamKnown",
   totalPlayers: 4,
-  knownTeammates: true,
 };
 
 // Team mode, known teammates (larger group)
 export const gameModeTeamKnown6Players: GameModeConfig = {
-  type: "team",
+  type: "teamKnown",
   totalPlayers: 6,
-  knownTeammates: true,
 };
 
 // Team mode, unknown teammates (minimum valid)
 export const gameModeTeamUnknown4Players: GameModeConfig = {
-  type: "team",
+  type: "teamUnknown",
   totalPlayers: 4,
-  knownTeammates: false,
 };
 
 // Team mode, unknown teammates (larger group)
 export const gameModeTeamUnknown6Players: GameModeConfig = {
-  type: "team",
+  type: "teamUnknown",
   totalPlayers: 6,
-  knownTeammates: false,
 };
 
 // Individual mode (minimum valid)

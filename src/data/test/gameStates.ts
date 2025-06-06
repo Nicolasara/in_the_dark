@@ -1,5 +1,5 @@
 import { GameState } from "../../types/gameTypes";
-import { createGameMode } from "../../types/gameModes";
+import { createGameMode } from "../../utils/gameModes";
 import {
   playerInTheDarkAnsweredCorrectly,
   playerInTheDarkAnsweredIncorrectly,
@@ -123,9 +123,8 @@ export const gameStateTeamRegularWin: GameState = {
   ],
   currentPhase: "ended",
   gameMode: createGameMode({
-    type: "team",
+    type: "teamKnown",
     totalPlayers: 4,
-    knownTeammates: true,
   }),
   outcomes: [outcomeTeamRegularWin],
   secret: "secret",
@@ -152,9 +151,8 @@ export const gameStateTeamLoss: GameState = {
   ],
   currentPhase: "ended",
   gameMode: createGameMode({
-    type: "team",
+    type: "teamKnown",
     totalPlayers: 4,
-    knownTeammates: true,
   }),
   outcomes: [outcomeTeamLoss],
   secret: "secret",
@@ -171,9 +169,8 @@ export const gameStateTeamDoubleWin: GameState = {
   ],
   currentPhase: "ended",
   gameMode: createGameMode({
-    type: "team",
+    type: "teamKnown",
     totalPlayers: 4,
-    knownTeammates: true,
   }),
   outcomes: [outcomeTeamDoubleWin],
   secret: "secret",
@@ -200,9 +197,8 @@ export const gameStateTeamTie: GameState = {
   ],
   currentPhase: "ended",
   gameMode: createGameMode({
-    type: "team",
+    type: "teamKnown",
     totalPlayers: 4,
-    knownTeammates: true,
   }),
   outcomes: [outcomeTeamTie],
   secret: "secret",

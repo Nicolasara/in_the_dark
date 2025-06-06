@@ -1,22 +1,23 @@
 import {
   GameMode,
-  TeamMode,
   IndividualMode,
   GameModeType,
+  TeamKnownMode,
+  TeamUnknownMode,
+  GameModeConfig,
 } from "../types/gameModes";
 
 export function calculateMaxInTheDarkPlayers(
   totalPlayers: number,
-  gameMode: GameMode
+  type: GameModeType
 ): number {
-  switch (gameMode.type) {
+  switch (type) {
     case "single":
       return 1;
-    case "team":
+    case "teamKnown":
       // If teammates know each other, we need more in the loop than in the dark
-      if ((gameMode as TeamMode).knownTeammates) {
-        return Math.floor((totalPlayers - 1) / 2);
-      }
+      return Math.floor((totalPlayers - 1) / 2);
+    case "teamUnknown":
       // If teammates don't know each other, we can have equal numbers
       return Math.floor(totalPlayers / 2);
     case "individual":
@@ -25,46 +26,38 @@ export function calculateMaxInTheDarkPlayers(
   }
 }
 
-export interface GameModeConfig {
-  type: GameModeType;
-  totalPlayers: number;
-  knownTeammates?: boolean; // Only used for team mode
-}
-
 export function createGameMode(config: GameModeConfig): GameMode {
-  const { type, totalPlayers, knownTeammates } = config;
+  const { type, totalPlayers, inTheDarkPlayers } = config;
 
   switch (type) {
     case "single":
       return {
-        type: "single",
-        maxInTheDarkPlayers: 1,
+        type,
+        inTheDarkPlayers: 1,
       };
 
-    case "team":
-      if (knownTeammates === undefined) {
-        throw new Error("knownTeammates must be specified for team mode");
-      }
-      const teamMode: TeamMode = {
-        type: "team",
-        knownTeammates,
-        maxInTheDarkPlayers: 0, // Will be calculated
+    case "teamKnown":
+      const teamKnownMode: TeamKnownMode = {
+        type,
+        inTheDarkPlayers:
+          inTheDarkPlayers ?? calculateMaxInTheDarkPlayers(totalPlayers, type),
       };
-      teamMode.maxInTheDarkPlayers = calculateMaxInTheDarkPlayers(
-        totalPlayers,
-        teamMode
-      );
-      return teamMode;
+      return teamKnownMode;
+
+    case "teamUnknown":
+      const teamUnknownMode: TeamUnknownMode = {
+        type,
+        inTheDarkPlayers:
+          inTheDarkPlayers ?? calculateMaxInTheDarkPlayers(totalPlayers, type),
+      };
+      return teamUnknownMode;
 
     case "individual":
       const individualMode: IndividualMode = {
-        type: "individual",
-        maxInTheDarkPlayers: 0, // Will be calculated
+        type,
+        inTheDarkPlayers:
+          inTheDarkPlayers ?? calculateMaxInTheDarkPlayers(totalPlayers, type),
       };
-      individualMode.maxInTheDarkPlayers = calculateMaxInTheDarkPlayers(
-        totalPlayers,
-        individualMode
-      );
       return individualMode;
 
     default:
