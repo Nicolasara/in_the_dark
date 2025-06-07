@@ -1,42 +1,61 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Player } from "../../types/player";
+import { calculateGameOutcomes } from "../../utils/winningConditions";
+import { GameState } from "../../types/gameState";
+import { createGameMode } from "../../utils/gameModes";
+import { getMostVotedPlayer } from "../../utils/voting";
 
 interface GameSummaryProps {
   players: Player[];
   selectedItem: string;
   onPlayAgain: () => void;
+  gameModeType?: "single" | "teamKnown" | "teamUnknown" | "individual";
 }
 
 export const GameSummary: React.FC<GameSummaryProps> = ({
   players,
   selectedItem,
   onPlayAgain,
+  gameModeType = "single",
 }) => {
-  // Find players in the dark
-  const playersInTheDark = players.filter((player) => player.isInTheDark);
-  const playersNotInTheDark = players.filter((player) => !player.isInTheDark);
+  // Use utility function to calculate proper game outcomes
+  const gameMode = createGameMode({
+    type: gameModeType,
+    totalPlayers: players.length,
+    inTheDarkPlayers: players.filter((p) => p.isInTheDark).length,
+  });
 
-  // Check if team not in the dark correctly identified who was in the dark
-  const mostVotedPlayer = players.reduce((prev, current) =>
-    current.votes > prev.votes ? current : prev
-  );
+  const gameState: GameState = {
+    players,
+    currentPhase: "ended",
+    gameMode,
+    outcomes: [],
+    secret: selectedItem,
+    round: 1,
+  };
+
+  const gameOutcome = calculateGameOutcomes(gameState);
+  const playersInTheDark = players.filter((player) => player.isInTheDark);
+
+  // Still need these for display purposes
+  const mostVotedPlayer = getMostVotedPlayer(players);
   const correctlyIdentified = mostVotedPlayer.isInTheDark;
 
-  // Check if players in the dark correctly guessed the item
-  const correctGuesses = playersInTheDark.filter(
-    (player) => player.answer === selectedItem
-  ).length;
-  const allGuessedCorrectly = correctGuesses === playersInTheDark.length;
+  // Determine overall result based on calculated outcomes
+  const totalPoints = gameOutcome.playerResults.reduce(
+    (sum, result) => sum + result.winningResult.points,
+    0
+  );
+  const maxPossiblePoints = playersInTheDark.length * 2; // Double win is max points
 
-  // Determine the winner
   let result: "notInTheDark" | "inTheDark" | "tie";
-  if (correctlyIdentified && allGuessedCorrectly) {
-    result = "tie";
-  } else if (correctlyIdentified) {
-    result = "notInTheDark";
+  if (totalPoints === maxPossiblePoints) {
+    result = "inTheDark"; // Perfect performance
+  } else if (totalPoints === playersInTheDark.length) {
+    result = "tie"; // Balanced performance
   } else {
-    result = "inTheDark";
+    result = "notInTheDark"; // Poor performance for in-the-dark team
   }
 
   return (

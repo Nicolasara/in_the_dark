@@ -1,4 +1,4 @@
-import { GameState } from "../types/gameTypes";
+import { GameState } from "../types/gameState";
 import { Player } from "../types/player";
 import {
   GameOutcome,

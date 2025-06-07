@@ -1,5 +1,6 @@
 import { GameMode } from "./gameModes";
 import { Player } from "./player";
+import { GameOutcome } from "./winningConditions";
 
 export type GamePhase =
   | "setup"
@@ -15,15 +16,8 @@ export type GamePhase =
 export interface GameState {
   players: Player[];
   currentPhase: GamePhase;
-  currentPlayerIndex: number;
+  gameMode: GameMode;
+  outcomes: GameOutcome[];
   secret: string;
-  mode: string;
-  inTheDarkPlayers: number;
-  totalPlayers: number;
-  outcomes?: GameOutcome[];
-}
-
-export interface GameOutcome {
-  type: "inTheDarkCaught" | "inTheDarkNotCaught";
-  players: Player[];
+  round: number;
 }

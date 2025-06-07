@@ -7,6 +7,7 @@ import {
   ScrollView,
 } from "react-native";
 import { Player } from "../../types/player";
+import { analyzeVotingResults } from "../../utils/voting";
 
 interface VoteResultsPhaseProps {
   players: Player[];
@@ -21,21 +22,9 @@ export const VoteResultsPhase: React.FC<VoteResultsPhaseProps> = ({
 }) => {
   const playersInTheDark = players.filter((player) => player.isInTheDark);
 
-  // Find the maximum number of votes
-  const maxVotes = Math.max(...players.map((player) => player.votes));
-
-  // Find all players with the maximum votes
-  const mostVotedPlayers = players.filter(
-    (player) => player.votes === maxVotes
-  );
-
-  // Check if any of the most voted players are in the dark
-  const wasCorrectlyIdentified = mostVotedPlayers.some(
-    (player) => player.isInTheDark
-  );
-
-  // Determine if it's a tie
-  const isTie = mostVotedPlayers.length > 1;
+  // Use utility function to analyze voting results
+  const { mostVotedPlayers, wasCorrectlyIdentified, isTie } =
+    analyzeVotingResults(players);
 
   // Determine the result based on tieIsWin prop
   const playersWon = isTie ? tieIsWin : wasCorrectlyIdentified;

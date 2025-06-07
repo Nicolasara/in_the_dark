@@ -11,6 +11,10 @@ import {
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../types/navigation";
+import {
+  createGameMode,
+  calculateMaxInTheDarkPlayers,
+} from "../utils/gameModes";
 
 type PlayerSelectionScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -61,8 +65,16 @@ export const PlayerSelectionScreen: React.FC<PlayerSelectionScreenProps> = ({
       Alert.alert("Error", "You need at least 3 players to start the game");
       return;
     }
+
+    // Use utility to create proper game mode configuration
+    const gameModeConfig = {
+      type: "single" as const,
+      totalPlayers: players.length,
+      inTheDarkPlayers: calculateMaxInTheDarkPlayers(players.length, "single"),
+    };
+
     navigation.navigate("CategorySelection", {
-      gameModeConfig: { type: "single", totalPlayers: players.length },
+      gameModeConfig,
       playerNames: players,
     });
   };

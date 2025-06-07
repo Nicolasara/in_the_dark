@@ -4,8 +4,10 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../types/navigation";
 import { Player } from "../types/player";
-import { GamePhase } from "../types/gameTypes";
+import { GamePhase } from "../types/gameState";
 import { gameData } from "../data/gameData";
+import { generateStartingPlayers, shuffleArray } from "../utils/players";
+import { createGameMode } from "../utils/gameModes";
 import { SetupPhase } from "./game/SetupPhase";
 import { RevealPhase } from "./game/RevealPhase";
 import { QuestionsPhase } from "./game/QuestionsPhase";
@@ -31,7 +33,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   navigation,
   route,
 }) => {
-  const { playerNames, category } = route.params;
+  const { playerNames, category, gameModeConfig } = route.params;
   const categoryData = gameData[category];
 
   const [players, setPlayers] = useState<Player[]>([]);
@@ -41,43 +43,22 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   const [availableQuestions, setAvailableQuestions] = useState<string[]>([]);
 
   useEffect(() => {
-    // Initialize players
-    const initialPlayers = playerNames.map((name: string, index: number) => ({
-      id: `player${index + 1}`,
-      name,
-      isInTheDark: false,
-      hasSeenItem: false,
-      votes: 0,
-      hasVoted: false,
-      goneThroughReveal: false,
-    }));
+    // Initialize players using utility function
+    const gameMode = createGameMode(gameModeConfig);
+    const initialPlayers = generateStartingPlayers(gameMode, playerNames);
     setPlayers(initialPlayers);
-  }, [playerNames]);
+  }, [playerNames, gameModeConfig]);
 
   const startGame = () => {
-    // Randomly select players to be "in the dark" (about 1/3 of players)
-    const darkCount = Math.max(1, Math.floor(players.length / 3));
-    const updatedPlayers = [...players];
+    // Players are already assigned "in the dark" status by generateStartingPlayers
 
-    for (let i = 0; i < darkCount; i++) {
-      let randomIndex;
-      do {
-        randomIndex = Math.floor(Math.random() * players.length);
-      } while (updatedPlayers[randomIndex].isInTheDark);
+    // Select random item using proper shuffle algorithm
+    const shuffledItems = shuffleArray([...categoryData.items]);
+    setSelectedItem(shuffledItems[0]);
 
-      updatedPlayers[randomIndex].isInTheDark = true;
-    }
-
-    setPlayers(updatedPlayers);
-
-    // Select random item
-    const randomItemIndex = Math.floor(
-      Math.random() * categoryData.items.length
-    );
-    setSelectedItem(categoryData.items[randomItemIndex]);
-
-    // Initialize available questions
-    setAvailableQuestions([...categoryData.questions]);
+    // Initialize available questions with proper shuffle algorithm
+    const shuffledQuestions = shuffleArray([...categoryData.questions]);
+    setAvailableQuestions(shuffledQuestions);
 
     setGamePhase("reveal");
     setCurrentPlayerIndex(0);

@@ -1,4 +1,4 @@
-import { GameState } from "../../types/gameTypes";
+import { GameState } from "../../types/gameState";
 import { createGameMode } from "../../utils/gameModes";
 import {
   playerInTheDarkAnsweredCorrectly,
