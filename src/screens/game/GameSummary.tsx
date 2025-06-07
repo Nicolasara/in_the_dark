@@ -5,9 +5,10 @@ import { calculateGameOutcomes } from "../../utils/winningConditions";
 import { GameState, GAME_PHASES } from "../../types/gameState";
 import { createGameMode } from "../../utils/gameModes";
 import { GameModeType } from "../../types/gameModes";
-import { getMostVotedPlayer } from "../../utils/voting";
+import { getMostVotedPlayer, analyzeVotingResults } from "../../utils/voting";
 import { getPlayersInTheDark } from "../../utils/players";
 import { GameResult, GAME_RESULTS } from "../../types/gameResult";
+import { logger } from "../../utils/logger";
 
 interface GameSummaryProps {
   players: Player[];
@@ -41,25 +42,43 @@ export const GameSummary: React.FC<GameSummaryProps> = ({
   const gameOutcome = calculateGameOutcomes(gameState);
   const playersInTheDark = getPlayersInTheDark(players);
 
-  // Still need these for display purposes
+  // Use proper voting analysis to determine winner
+  const votingAnalysis = analyzeVotingResults(players);
+  const { wasCorrectlyIdentified, mostVotedPlayers, isTie, tieBreakWinner } =
+    votingAnalysis;
+
+  // Debug logging to understand the issue
+  logger.log("=== GameSummary Winning Logic Debug ===");
+  logger.log(
+    "Players in the dark:",
+    playersInTheDark.map((p) => p.name)
+  );
+  logger.log(
+    "Most voted players:",
+    mostVotedPlayers.map((p) => ({ name: p.name, isInTheDark: p.isInTheDark }))
+  );
+  logger.log("Was correctly identified:", wasCorrectlyIdentified);
+  logger.log("Is tie:", isTie);
+  logger.log("Tie break winner:", tieBreakWinner);
+
+  // Determine winner based on simple game rules:
+  // - "In the Loop" wins if they correctly identify at least one "in the dark" player
+  // - "In the Dark" wins if they avoid being caught
+  let result: GameResult;
+
+  if (wasCorrectlyIdentified || (isTie && tieBreakWinner === "inTheLoop")) {
+    result = GAME_RESULTS.IN_THE_LOOP;
+  } else if (isTie && tieBreakWinner === "trueTie") {
+    result = GAME_RESULTS.TIE;
+  } else {
+    result = GAME_RESULTS.IN_THE_DARK;
+  }
+
+  logger.log("Final result:", result);
+
+  // Keep these for display purposes
   const mostVotedPlayer = getMostVotedPlayer(players);
   const correctlyIdentified = mostVotedPlayer.isInTheDark;
-
-  // Determine overall result based on calculated outcomes
-  const totalPoints = gameOutcome.playerResults.reduce(
-    (sum, result) => sum + result.winningResult.points,
-    0
-  );
-  const maxPossiblePoints = playersInTheDark.length * 2; // Double win is max points
-
-  let result: GameResult;
-  if (totalPoints === maxPossiblePoints) {
-    result = GAME_RESULTS.IN_THE_DARK; // Perfect performance
-  } else if (totalPoints === playersInTheDark.length) {
-    result = GAME_RESULTS.TIE; // Balanced performance
-  } else {
-    result = GAME_RESULTS.IN_THE_LOOP; // Poor performance for in-the-dark team
-  }
 
   return (
     <View style={styles.container}>

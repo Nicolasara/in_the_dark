@@ -47,7 +47,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     // Initialize players using utility function
     const gameMode = createGameMode(gameModeConfig);
     const initialPlayers = generateStartingPlayers(gameMode, playerNames);
-    setPlayers(initialPlayers);
+
+    // Randomize player order to prevent predictable reveal patterns
+    // This ensures "in the dark" players aren't always revealed first
+    const shuffledPlayers = shuffleArray([...initialPlayers]);
+    setPlayers(shuffledPlayers);
   }, [playerNames, gameModeConfig]);
 
   const startGame = () => {
