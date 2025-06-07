@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  Keyboard,
 } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp } from "@react-navigation/native";
@@ -53,6 +54,7 @@ export const PlayerSelectionScreen: React.FC<PlayerSelectionScreenProps> = ({
 
     setPlayers([...players, newPlayerName.trim()]);
     setNewPlayerName("");
+    Keyboard.dismiss(); // Dismiss the keyboard after adding a player
   };
 
   const removePlayer = (index: number) => {
@@ -85,6 +87,10 @@ export const PlayerSelectionScreen: React.FC<PlayerSelectionScreenProps> = ({
           value={newPlayerName}
           onChangeText={setNewPlayerName}
           onSubmitEditing={addPlayer}
+          autoCorrect={false}
+          autoComplete="off"
+          spellCheck={false}
+          returnKeyType="done"
         />
         <TouchableOpacity style={styles.addButton} onPress={addPlayer}>
           <Text style={styles.addButtonText}>Add</Text>
@@ -166,15 +172,15 @@ const styles = StyleSheet.create({
   playerItem: {
     flexDirection: "row",
     backgroundColor: "#333",
-    padding: 15,
-    borderRadius: 8,
-    marginBottom: 10,
+    padding: 10,
+    borderRadius: 6,
+    marginBottom: 6,
     alignItems: "center",
   },
   playerName: {
     flex: 1,
     color: "#ffffff",
-    fontSize: 18,
+    fontSize: 16,
   },
   removeButton: {
     padding: 5,
