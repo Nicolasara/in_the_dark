@@ -7,6 +7,7 @@ import {
   ScrollView,
 } from "react-native";
 import { Player } from "../../types/player";
+import { getPlayersInTheDark } from "../../utils/players";
 
 interface GuessingResultsPhaseProps {
   players: Player[];
@@ -19,7 +20,7 @@ export const GuessingResultsPhase: React.FC<GuessingResultsPhaseProps> = ({
   selectedItem,
   onPhaseComplete,
 }) => {
-  const playersInTheDark = players.filter((player) => player.isInTheDark);
+  const playersInTheDark = getPlayersInTheDark(players);
   const correctGuesses = playersInTheDark.filter(
     (player) => player.answer?.toLowerCase() === selectedItem.toLowerCase()
   );

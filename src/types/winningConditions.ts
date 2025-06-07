@@ -1,10 +1,4 @@
-export type WinType =
-  | "double"
-  | "regular"
-  | "half"
-  | "tie"
-  | "loss"
-  | "oneAndHalf";
+export type WinType = "double" | "win" | "half" | "tie" | "loss" | "oneAndHalf";
 
 export interface BaseWinningResult {
   type: WinType;
@@ -16,8 +10,8 @@ export interface DoubleWin extends BaseWinningResult {
   points: 2;
 }
 
-export interface RegularWin extends BaseWinningResult {
-  type: "regular";
+export interface Win extends BaseWinningResult {
+  type: "win";
   points: 1;
 }
 
@@ -43,7 +37,7 @@ export interface OneAndHalfWin extends BaseWinningResult {
 
 export type WinningResult =
   | DoubleWin
-  | RegularWin
+  | Win
   | HalfWin
   | Tie
   | Loss

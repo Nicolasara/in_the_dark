@@ -29,7 +29,7 @@ export const outcomeSingleInTheDarkWin: GameOutcome = {
       playerId: "inTheDark1",
       caughtByInTheLoop: false,
       knowsSecret: false,
-      winningResult: { type: "regular", points: 1 },
+      winningResult: { type: "win", points: 1 },
     },
   ],
 };
@@ -58,20 +58,20 @@ export const outcomeSingleInTheLoopWin: GameOutcome = {
   ],
 };
 
-// TEAM MODE: both not caught, both don't know secret (Team Regular Win)
-export const outcomeTeamRegularWin: GameOutcome = {
+// TEAM MODE: both not caught, both don't know secret (Team Win)
+export const outcomeTeamWin: GameOutcome = {
   playerResults: [
     {
       playerId: "inTheDark1",
       caughtByInTheLoop: false,
       knowsSecret: false,
-      winningResult: { type: "regular", points: 1 },
+      winningResult: { type: "win", points: 1 },
     },
     {
       playerId: "inTheDark2",
       caughtByInTheLoop: false,
       knowsSecret: false,
-      winningResult: { type: "regular", points: 1 },
+      winningResult: { type: "win", points: 1 },
     },
   ],
 };
@@ -148,8 +148,8 @@ export const outcomeIndividualHalfWin: GameOutcome = {
   ],
 };
 
-// INDIVIDUAL MODE: not caught, one knows secret, one doesn't (Double Win + Regular Win)
-export const outcomeIndividualDoubleAndRegularWin: GameOutcome = {
+// INDIVIDUAL MODE: not caught, one knows secret, one doesn't (Double Win + Win)
+export const outcomeIndividualDoubleAndWin: GameOutcome = {
   playerResults: [
     {
       playerId: "inTheDark1",
@@ -161,7 +161,7 @@ export const outcomeIndividualDoubleAndRegularWin: GameOutcome = {
       playerId: "inTheDark2",
       caughtByInTheLoop: false,
       knowsSecret: false,
-      winningResult: { type: "regular", points: 1 },
+      winningResult: { type: "win", points: 1 },
     },
   ],
 };

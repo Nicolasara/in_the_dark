@@ -9,6 +9,7 @@ import {
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types/navigation";
 import { GameModeConfig, GameModeType } from "../types/gameModes";
+import { Category, CategoryId } from "../types/categories";
 import { logger } from "../utils/logger";
 
 type CategorySelectionScreenNavigationProp = NativeStackNavigationProp<
@@ -24,13 +25,6 @@ interface CategorySelectionScreenProps {
       playerNames: string[];
     };
   };
-}
-
-interface Category {
-  id: string;
-  name: string;
-  description: string;
-  icon: string;
 }
 
 const categories: Category[] = [

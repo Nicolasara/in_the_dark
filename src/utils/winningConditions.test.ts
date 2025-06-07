@@ -27,9 +27,9 @@ describe("calculateGameOutcomes", () => {
     },
     // Team mode
     {
-      name: "Team mode, both not caught, both don't know secret (Regular Win)",
-      state: gameStates.gameStateTeamRegularWin,
-      expected: gameOutcomes.outcomeTeamRegularWin,
+      name: "Team mode, both not caught, both don't know secret (Win)",
+      state: gameStates.gameStateTeamWin,
+      expected: gameOutcomes.outcomeTeamWin,
     },
     {
       name: "Team mode, one or both caught, both don't know secret (Loss)",
@@ -53,9 +53,9 @@ describe("calculateGameOutcomes", () => {
       expected: gameOutcomes.outcomeIndividualHalfWin,
     },
     {
-      name: "Individual mode, not caught, one knows secret, one doesn't (Double Win + Regular Win)",
-      state: gameStates.gameStateIndividualDoubleAndRegularWin,
-      expected: gameOutcomes.outcomeIndividualDoubleAndRegularWin,
+      name: "Individual mode, not caught, one knows secret, one doesn't (Double Win + Win)",
+      state: gameStates.gameStateIndividualDoubleAndWin,
+      expected: gameOutcomes.outcomeIndividualDoubleAndWin,
     },
     {
       name: "Individual mode, one caught (loss), one not caught knows secret (one and a half win), one not caught doesn't know secret (half win)",

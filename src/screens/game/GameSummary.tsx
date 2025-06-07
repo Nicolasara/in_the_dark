@@ -2,15 +2,18 @@ import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Player } from "../../types/player";
 import { calculateGameOutcomes } from "../../utils/winningConditions";
-import { GameState } from "../../types/gameState";
+import { GameState, GAME_PHASES } from "../../types/gameState";
 import { createGameMode } from "../../utils/gameModes";
+import { GameModeType } from "../../types/gameModes";
 import { getMostVotedPlayer } from "../../utils/voting";
+import { getPlayersInTheDark } from "../../utils/players";
+import { GameResult, GAME_RESULTS } from "../../types/gameResult";
 
 interface GameSummaryProps {
   players: Player[];
   selectedItem: string;
   onPlayAgain: () => void;
-  gameModeType?: "single" | "teamKnown" | "teamUnknown" | "individual";
+  gameModeType?: GameModeType;
 }
 
 export const GameSummary: React.FC<GameSummaryProps> = ({
@@ -23,12 +26,12 @@ export const GameSummary: React.FC<GameSummaryProps> = ({
   const gameMode = createGameMode({
     type: gameModeType,
     totalPlayers: players.length,
-    inTheDarkPlayers: players.filter((p) => p.isInTheDark).length,
+    inTheDarkPlayers: getPlayersInTheDark(players).length,
   });
 
   const gameState: GameState = {
     players,
-    currentPhase: "ended",
+    currentPhase: GAME_PHASES.ENDED,
     gameMode,
     outcomes: [],
     secret: selectedItem,
@@ -36,7 +39,7 @@ export const GameSummary: React.FC<GameSummaryProps> = ({
   };
 
   const gameOutcome = calculateGameOutcomes(gameState);
-  const playersInTheDark = players.filter((player) => player.isInTheDark);
+  const playersInTheDark = getPlayersInTheDark(players);
 
   // Still need these for display purposes
   const mostVotedPlayer = getMostVotedPlayer(players);
@@ -49,13 +52,13 @@ export const GameSummary: React.FC<GameSummaryProps> = ({
   );
   const maxPossiblePoints = playersInTheDark.length * 2; // Double win is max points
 
-  let result: "notInTheDark" | "inTheDark" | "tie";
+  let result: GameResult;
   if (totalPoints === maxPossiblePoints) {
-    result = "inTheDark"; // Perfect performance
+    result = GAME_RESULTS.IN_THE_DARK; // Perfect performance
   } else if (totalPoints === playersInTheDark.length) {
-    result = "tie"; // Balanced performance
+    result = GAME_RESULTS.TIE; // Balanced performance
   } else {
-    result = "notInTheDark"; // Poor performance for in-the-dark team
+    result = GAME_RESULTS.IN_THE_LOOP; // Poor performance for in-the-dark team
   }
 
   return (
@@ -64,16 +67,16 @@ export const GameSummary: React.FC<GameSummaryProps> = ({
 
       <View style={styles.resultBox}>
         <Text style={styles.resultTitle}>
-          {result === "notInTheDark"
-            ? "Team Not in the Dark Wins!"
-            : result === "inTheDark"
+          {result === GAME_RESULTS.IN_THE_LOOP
+            ? "Team In the Loop Wins!"
+            : result === GAME_RESULTS.IN_THE_DARK
             ? "Team In the Dark Wins!"
             : "It's a Tie!"}
         </Text>
         <Text style={styles.resultSubtitle}>
-          {result === "notInTheDark"
+          {result === GAME_RESULTS.IN_THE_LOOP
             ? "They caught the players in the dark!"
-            : result === "inTheDark"
+            : result === GAME_RESULTS.IN_THE_DARK
             ? "They successfully stayed hidden!"
             : "Both teams achieved their goals!"}
         </Text>

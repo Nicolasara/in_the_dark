@@ -51,3 +51,21 @@ export function shuffleArray<T>(array: T[]): T[] {
   }
   return arr;
 }
+
+/**
+ * Filters and returns only the players who are "in the dark"
+ * @param players Array of players
+ * @returns Array of players who are in the dark
+ */
+export function getPlayersInTheDark(players: Player[]): Player[] {
+  return players.filter((player) => player.isInTheDark);
+}
+
+/**
+ * Filters and returns only the players who are "in the loop"
+ * @param players Array of players
+ * @returns Array of players who are in the loop
+ */
+export function getPlayersInTheLoop(players: Player[]): Player[] {
+  return players.filter((player) => !player.isInTheDark);
+}

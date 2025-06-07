@@ -15,6 +15,7 @@ import {
   createGameMode,
   calculateMaxInTheDarkPlayers,
 } from "../utils/gameModes";
+import { GameModeType } from "../types/gameModes";
 
 type PlayerSelectionScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -67,10 +68,11 @@ export const PlayerSelectionScreen: React.FC<PlayerSelectionScreenProps> = ({
     }
 
     // Use utility to create proper game mode configuration
+    const gameMode: GameModeType = "single";
     const gameModeConfig = {
-      type: "single" as const,
+      type: gameMode,
       totalPlayers: players.length,
-      inTheDarkPlayers: calculateMaxInTheDarkPlayers(players.length, "single"),
+      inTheDarkPlayers: calculateMaxInTheDarkPlayers(players.length, gameMode),
     };
 
     navigation.navigate("CategorySelection", {

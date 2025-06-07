@@ -15,12 +15,12 @@ import {
   outcomeSingleInTheDarkWin,
   outcomeSingleInTheDarkTie,
   outcomeSingleInTheLoopWin,
-  outcomeTeamRegularWin,
+  outcomeTeamWin,
   outcomeTeamLoss,
   outcomeTeamDoubleWin,
   outcomeTeamTie,
   outcomeIndividualHalfWin,
-  outcomeIndividualDoubleAndRegularWin,
+  outcomeIndividualDoubleAndWin,
   outcomeIndividualWinAndHalf,
   outcomeIndividualOneAndHalfWin,
 } from "./gameOutcomes";
@@ -105,8 +105,8 @@ export const gameStateSingleInTheLoopWin: GameState = {
   round: 1,
 };
 
-// TEAM MODE: both not caught, both don't know secret (Team Regular Win)
-export const gameStateTeamRegularWin: GameState = {
+// TEAM MODE: both not caught, both don't know secret (Team Win)
+export const gameStateTeamWin: GameState = {
   players: [
     {
       ...playerInTheDarkAnsweredIncorrectly,
@@ -126,7 +126,7 @@ export const gameStateTeamRegularWin: GameState = {
     type: "teamKnown",
     totalPlayers: 4,
   }),
-  outcomes: [outcomeTeamRegularWin],
+  outcomes: [outcomeTeamWin],
   secret: "secret",
   round: 1,
 };
@@ -230,8 +230,8 @@ export const gameStateIndividualHalfWin: GameState = {
   round: 1,
 };
 
-// INDIVIDUAL MODE: not caught, one knows secret, one doesn't (Double Win + Regular Win)
-export const gameStateIndividualDoubleAndRegularWin: GameState = {
+// INDIVIDUAL MODE: not caught, one knows secret, one doesn't (Double Win + Win)
+export const gameStateIndividualDoubleAndWin: GameState = {
   players: [
     { ...playerInTheDarkAnsweredCorrectly, id: "inTheDark1", answer: "secret" },
     {
@@ -244,7 +244,7 @@ export const gameStateIndividualDoubleAndRegularWin: GameState = {
   ],
   currentPhase: "ended",
   gameMode: createGameMode({ type: "individual", totalPlayers: 4 }),
-  outcomes: [outcomeIndividualDoubleAndRegularWin],
+  outcomes: [outcomeIndividualDoubleAndWin],
   secret: "secret",
   round: 1,
 };

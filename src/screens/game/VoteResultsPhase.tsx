@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { Player } from "../../types/player";
 import { analyzeVotingResults } from "../../utils/voting";
+import { getPlayersInTheDark } from "../../utils/players";
 
 interface VoteResultsPhaseProps {
   players: Player[];
@@ -20,7 +21,7 @@ export const VoteResultsPhase: React.FC<VoteResultsPhaseProps> = ({
   onPhaseComplete,
   tieIsWin = false, // Default to false for backward compatibility
 }) => {
-  const playersInTheDark = players.filter((player) => player.isInTheDark);
+  const playersInTheDark = getPlayersInTheDark(players);
 
   // Use utility function to analyze voting results
   const { mostVotedPlayers, wasCorrectlyIdentified, isTie } =

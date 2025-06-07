@@ -4,7 +4,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../types/navigation";
 import { Player } from "../types/player";
-import { GamePhase } from "../types/gameState";
+import { GamePhase, GAME_PHASES } from "../types/gameState";
 import { gameData } from "../data/gameData";
 import { generateStartingPlayers, shuffleArray } from "../utils/players";
 import { createGameMode } from "../utils/gameModes";
@@ -39,7 +39,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   const [players, setPlayers] = useState<Player[]>([]);
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
   const [selectedItem, setSelectedItem] = useState("");
-  const [gamePhase, setGamePhase] = useState<GamePhase>("setup");
+  const [gamePhase, setGamePhase] = useState<GamePhase>(GAME_PHASES.SETUP);
   const [availableQuestions, setAvailableQuestions] = useState<string[]>([]);
 
   useEffect(() => {
@@ -60,7 +60,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     const shuffledQuestions = shuffleArray([...categoryData.questions]);
     setAvailableQuestions(shuffledQuestions);
 
-    setGamePhase("reveal");
+    setGamePhase(GAME_PHASES.REVEAL);
     setCurrentPlayerIndex(0);
   };
 
@@ -91,7 +91,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     const allPlayersVoted = updatedPlayers.every((player) => player.hasVoted);
 
     if (allPlayersVoted) {
-      setGamePhase("voteResults");
+      setGamePhase(GAME_PHASES.VOTE_RESULTS);
     } else {
       // Move to next player who hasn't voted yet
       let nextPlayerIndex = (currentPlayerIndex + 1) % players.length;
@@ -112,7 +112,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   };
 
   const handlePlayerComplete = () => {
-    if (gamePhase === "guessing") {
+    if (gamePhase === GAME_PHASES.GUESSING) {
       // Find the next player who is in the dark
       let nextPlayerIndex = (currentPlayerIndex + 1) % players.length;
       while (nextPlayerIndex !== currentPlayerIndex) {
@@ -132,39 +132,41 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   const handlePhaseComplete = () => {
     setCurrentPlayerIndex(0);
     switch (gamePhase) {
-      case "reveal":
-        setGamePhase("questions");
+      case GAME_PHASES.REVEAL:
+        setGamePhase(GAME_PHASES.QUESTIONS);
         break;
-      case "questions":
-        setGamePhase("review");
+      case GAME_PHASES.QUESTIONS:
+        setGamePhase(GAME_PHASES.REVIEW);
         break;
-      case "review":
-        setGamePhase("voting");
+      case GAME_PHASES.REVIEW:
+        setGamePhase(GAME_PHASES.VOTING);
         break;
-      case "voting":
-        setGamePhase("voteResults");
+      case GAME_PHASES.VOTING:
+        setGamePhase(GAME_PHASES.VOTE_RESULTS);
         break;
-      case "voteResults":
+      case GAME_PHASES.VOTE_RESULTS:
         // Find the first player who is in the dark
         const firstDarkPlayerIndex = players.findIndex(
           (player) => player.isInTheDark
         );
         setCurrentPlayerIndex(firstDarkPlayerIndex);
-        setGamePhase("guessing");
+        setGamePhase(GAME_PHASES.GUESSING);
         break;
-      case "guessing":
-        setGamePhase("guessingResults");
+      case GAME_PHASES.GUESSING:
+        setGamePhase(GAME_PHASES.GUESSING_RESULTS);
         break;
-      case "guessingResults":
-        setGamePhase("ended");
+      case GAME_PHASES.GUESSING_RESULTS:
+        setGamePhase(GAME_PHASES.ENDED);
         break;
     }
   };
 
   return (
     <View style={styles.container}>
-      {gamePhase === "setup" && <SetupPhase onStartGame={startGame} />}
-      {gamePhase === "reveal" && players.length > 0 && (
+      {gamePhase === GAME_PHASES.SETUP && (
+        <SetupPhase onStartGame={startGame} />
+      )}
+      {gamePhase === GAME_PHASES.REVEAL && players.length > 0 && (
         <RevealPhase
           players={players}
           currentPlayerIndex={currentPlayerIndex}
@@ -174,7 +176,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
           updatePlayer={updatePlayer}
         />
       )}
-      {gamePhase === "questions" && players.length > 0 && (
+      {gamePhase === GAME_PHASES.QUESTIONS && players.length > 0 && (
         <QuestionsPhase
           players={players}
           currentPlayerIndex={currentPlayerIndex}
@@ -184,10 +186,10 @@ export const GameScreen: React.FC<GameScreenProps> = ({
           assignQuestion={assignQuestion}
         />
       )}
-      {gamePhase === "review" && players.length > 0 && (
+      {gamePhase === GAME_PHASES.REVIEW && players.length > 0 && (
         <ReviewPhase players={players} onPhaseComplete={handlePhaseComplete} />
       )}
-      {gamePhase === "voting" && players.length > 0 && (
+      {gamePhase === GAME_PHASES.VOTING && players.length > 0 && (
         <VotingPhase
           players={players}
           currentPlayerIndex={currentPlayerIndex}
@@ -196,14 +198,14 @@ export const GameScreen: React.FC<GameScreenProps> = ({
           submitVote={submitVote}
         />
       )}
-      {gamePhase === "voteResults" && players.length > 0 && (
+      {gamePhase === GAME_PHASES.VOTE_RESULTS && players.length > 0 && (
         <VoteResultsPhase
           players={players}
           onPhaseComplete={handlePhaseComplete}
           tieIsWin={false}
         />
       )}
-      {gamePhase === "guessing" && players.length > 0 && (
+      {gamePhase === GAME_PHASES.GUESSING && players.length > 0 && (
         <GuessingPhase
           players={players}
           currentPlayerIndex={currentPlayerIndex}
@@ -214,14 +216,14 @@ export const GameScreen: React.FC<GameScreenProps> = ({
           updatePlayer={updatePlayer}
         />
       )}
-      {gamePhase === "guessingResults" && players.length > 0 && (
+      {gamePhase === GAME_PHASES.GUESSING_RESULTS && players.length > 0 && (
         <GuessingResultsPhase
           players={players}
           selectedItem={selectedItem}
           onPhaseComplete={handlePhaseComplete}
         />
       )}
-      {gamePhase === "ended" && players.length > 0 && (
+      {gamePhase === GAME_PHASES.ENDED && players.length > 0 && (
         <GameSummary
           players={players}
           selectedItem={selectedItem}
