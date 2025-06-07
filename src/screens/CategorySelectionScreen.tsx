@@ -5,10 +5,11 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
-  Image,
 } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../App";
+import { RootStackParamList } from "../types/navigation";
+import { GameModeConfig, GameModeType } from "../types/gameModes";
+import { logger } from "../utils/logger";
 
 type CategorySelectionScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -19,7 +20,8 @@ interface CategorySelectionScreenProps {
   navigation: CategorySelectionScreenNavigationProp;
   route: {
     params: {
-      players: string[];
+      gameModeConfig: GameModeConfig;
+      playerNames: string[];
     };
   };
 }
@@ -28,7 +30,7 @@ interface Category {
   id: string;
   name: string;
   description: string;
-  icon: string; // We'll use emoji for now, but could be replaced with actual icons
+  icon: string;
 }
 
 const categories: Category[] = [
@@ -55,12 +57,19 @@ const categories: Category[] = [
 export const CategorySelectionScreen: React.FC<
   CategorySelectionScreenProps
 > = ({ navigation, route }) => {
-  const { players } = route.params;
+  const { gameModeConfig, playerNames } = route.params;
 
-  const handleCategorySelect = (category: Category) => {
+  const handleCategorySelect = (category: string) => {
+    logger.log("[CategorySelection] Navigating to Game with:", {
+      mode: gameModeConfig.type,
+      inTheDarkPlayers: gameModeConfig.inTheDarkPlayers,
+      totalPlayers: gameModeConfig.totalPlayers,
+    });
+
     navigation.navigate("Game", {
-      players,
-      category: category.id,
+      gameModeConfig,
+      category,
+      playerNames: route.params.playerNames,
     });
   };
 
@@ -74,7 +83,7 @@ export const CategorySelectionScreen: React.FC<
           <TouchableOpacity
             key={category.id}
             style={styles.categoryCard}
-            onPress={() => handleCategorySelect(category)}
+            onPress={() => handleCategorySelect(category.id)}
           >
             <Text style={styles.categoryIcon}>{category.icon}</Text>
             <View style={styles.categoryInfo}>
