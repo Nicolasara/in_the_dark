@@ -1,4 +1,4 @@
-import { Player } from "../../types/gameTypes";
+import { Player } from "../../types/player";
 
 /**
  * All player test data below is correctly formatted and represents valid game states

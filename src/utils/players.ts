@@ -1,4 +1,4 @@
-import { Player } from "../types/gameTypes";
+import { Player } from "../types/player";
 import { GameMode } from "../types/gameModes";
 
 /**
@@ -14,7 +14,7 @@ export function generateStartingPlayers(
 ): Player[] {
   const totalPlayers = names.length;
   const players: Player[] = [];
-  const numInTheDark = inTheDarkCount ?? gameMode.maxInTheDarkPlayers;
+  const numInTheDark = inTheDarkCount ?? gameMode.inTheDarkPlayers;
   const shuffledNames = shuffleArray([...names]);
 
   // Fill in names if not enough provided
@@ -33,6 +33,7 @@ export function generateStartingPlayers(
       votes: 0,
       hasVoted: false,
       knowsSecret: false,
+      hasSeenItem: false,
     });
   }
 

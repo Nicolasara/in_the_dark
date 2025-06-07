@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp } from "@react-navigation/native";
-import { RootStackParamList } from "../../App";
+import { RootStackParamList } from "../types/navigation";
 
 type PlayerSelectionScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -61,7 +61,10 @@ export const PlayerSelectionScreen: React.FC<PlayerSelectionScreenProps> = ({
       Alert.alert("Error", "You need at least 3 players to start the game");
       return;
     }
-    navigation.navigate("CategorySelection", { players });
+    navigation.navigate("CategorySelection", {
+      gameModeConfig: { type: "single", totalPlayers: players.length },
+      playerNames: players,
+    });
   };
 
   return (

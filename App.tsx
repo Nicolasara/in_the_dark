@@ -8,18 +8,7 @@ import { PlayerSelectionScreen } from "./src/screens/PlayerSelectionScreen";
 import { CategorySelectionScreen } from "./src/screens/CategorySelectionScreen";
 import { GameScreen } from "./src/screens/GameScreen";
 import { SafeScreen } from "./src/components/common/SafeScreen";
-
-export type RootStackParamList = {
-  Title: undefined;
-  PlayerSelection: undefined;
-  CategorySelection: {
-    players: string[];
-  };
-  Game: {
-    players: string[];
-    category: string;
-  };
-};
+import { RootStackParamList } from "./src/types/navigation";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import { Player } from "../../types/gameTypes";
+import { Player } from "../../types/player";
 
 interface QuestionsPhaseProps {
   players: Player[];

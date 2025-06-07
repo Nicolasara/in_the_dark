@@ -1,4 +1,5 @@
-import { GameState, Player } from "../types/gameTypes";
+import { GameState } from "../types/gameTypes";
+import { Player } from "../types/player";
 import {
   GameOutcome,
   PlayerResult,

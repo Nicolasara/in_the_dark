@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp } from "@react-navigation/native";
-import { RootStackParamList } from "../../App";
-import { Player, GamePhase } from "../types/gameTypes";
+import { RootStackParamList } from "../types/navigation";
+import { Player } from "../types/player";
+import { GamePhase } from "../types/gameTypes";
 import { gameData } from "../data/gameData";
 import { SetupPhase } from "./game/SetupPhase";
 import { RevealPhase } from "./game/RevealPhase";
@@ -30,7 +31,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   navigation,
   route,
 }) => {
-  const { players: playerNames, category } = route.params;
+  const { playerNames, category } = route.params;
   const categoryData = gameData[category];
 
   const [players, setPlayers] = useState<Player[]>([]);
@@ -41,12 +42,14 @@ export const GameScreen: React.FC<GameScreenProps> = ({
 
   useEffect(() => {
     // Initialize players
-    const initialPlayers = playerNames.map((name) => ({
+    const initialPlayers = playerNames.map((name: string, index: number) => ({
+      id: `player${index + 1}`,
       name,
       isInTheDark: false,
       hasSeenItem: false,
       votes: 0,
       hasVoted: false,
+      goneThroughReveal: false,
     }));
     setPlayers(initialPlayers);
   }, [playerNames]);

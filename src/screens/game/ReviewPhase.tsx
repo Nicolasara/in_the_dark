@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import { Player } from "../../types/gameTypes";
+import { Player } from "../../types/player";
 
 interface ReviewPhaseProps {
   players: Player[];
