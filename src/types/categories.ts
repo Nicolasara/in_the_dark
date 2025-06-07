@@ -1,4 +1,4 @@
-export type CategoryId = "food" | "household" | "jobs";
+export type CategoryId = "food" | "household" | "jobs" | "cocktails";
 
 export interface Category {
   id: CategoryId;

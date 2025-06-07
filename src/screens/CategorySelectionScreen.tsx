@@ -46,6 +46,12 @@ const categories: Category[] = [
     description: "Different occupations and careers",
     icon: "💼",
   },
+  {
+    id: "cocktails",
+    name: "Cocktails & Drinks",
+    description: "Classic cocktails and mixed drinks",
+    icon: "🍸",
+  },
 ];
 
 export const CategorySelectionScreen: React.FC<
