@@ -26,24 +26,61 @@ export function getMostVotedPlayer(players: Player[]): Player {
 }
 
 /**
- * Checks if the voting correctly identified players in the dark
+ * Analyzes the voting results to determine if players correctly identified those in the dark
  * @param players Array of all players
- * @returns Object with identification results
+ * @returns Object with detailed identification results
  */
 export function analyzeVotingResults(players: Player[]): {
   mostVotedPlayers: Player[];
   wasCorrectlyIdentified: boolean;
   isTie: boolean;
+  tieBreakWinner: "inTheDark" | "inTheLoop" | "trueTie";
 } {
   const mostVotedPlayers = getMostVotedPlayers(players);
-  const wasCorrectlyIdentified = mostVotedPlayers.some(
-    (player) => player.isInTheDark
-  );
   const isTie = mostVotedPlayers.length > 1;
+
+  // Determine if voting correctly identified players in the dark
+  let wasCorrectlyIdentified: boolean;
+  let tieBreakWinner: "inTheDark" | "inTheLoop" | "trueTie";
+
+  if (!isTie) {
+    // No tie - simple case (or no votes cast)
+    if (mostVotedPlayers.length === 0) {
+      // No votes cast - default to "in the dark" team wins
+      wasCorrectlyIdentified = false;
+      tieBreakWinner = "inTheDark";
+    } else {
+      wasCorrectlyIdentified = mostVotedPlayers[0].isInTheDark;
+      tieBreakWinner = wasCorrectlyIdentified ? "inTheLoop" : "inTheDark";
+    }
+  } else {
+    // There's a tie - analyze who the tied players are
+    const tiedInTheDark = mostVotedPlayers.filter(
+      (player) => player.isInTheDark
+    );
+    const tiedInTheLoop = mostVotedPlayers.filter(
+      (player) => !player.isInTheDark
+    );
+
+    if (tiedInTheDark.length === mostVotedPlayers.length) {
+      // All tied players are in the dark - "In the loop" team wins
+      wasCorrectlyIdentified = true;
+      tieBreakWinner = "inTheLoop";
+    } else if (tiedInTheLoop.length === mostVotedPlayers.length) {
+      // All tied players are in the loop - "In the dark" team wins
+      wasCorrectlyIdentified = false;
+      tieBreakWinner = "inTheDark";
+    } else {
+      // Mixed tie (some in the dark, some in the loop) - partial success
+      wasCorrectlyIdentified = true; // Some players in the dark were identified
+      tieBreakWinner = "trueTie";
+    }
+  }
 
   return {
     mostVotedPlayers,
     wasCorrectlyIdentified,
     isTie,
+    tieBreakWinner,
   };
 }

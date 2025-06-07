@@ -1,11 +1,21 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Modal } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Modal,
+  ScrollView,
+} from "react-native";
 import { Player } from "../../types/player";
+import { GameMode } from "../../types/gameModes";
+import { getPlayersInTheDark } from "../../utils/players";
 
 interface RevealPhaseProps {
   players: Player[];
   currentPlayerIndex: number;
   selectedItem: string;
+  gameMode: GameMode;
   onPhaseComplete: () => void;
   onPlayerComplete: () => void;
   updatePlayer: (playerIndex: number, updates: Partial<Player>) => void;
@@ -15,6 +25,7 @@ export const RevealPhase: React.FC<RevealPhaseProps> = ({
   players,
   currentPlayerIndex,
   selectedItem,
+  gameMode,
   onPhaseComplete,
   onPlayerComplete,
   updatePlayer,
@@ -31,6 +42,22 @@ export const RevealPhase: React.FC<RevealPhaseProps> = ({
     }
 
     updatePlayer(currentPlayerIndex, { hasSeenItem: true });
+  };
+
+  const getCurrentPlayerTeammates = () => {
+    if (gameMode.type !== "teamKnown") {
+      return [];
+    }
+
+    const currentPlayer = players[currentPlayerIndex];
+    if (!currentPlayer.isInTheDark) {
+      return [];
+    }
+
+    const playersInTheDark = getPlayersInTheDark(players);
+    return playersInTheDark.filter(
+      (player) => player.name !== currentPlayer.name
+    );
   };
 
   const handleModalClose = () => {
@@ -91,6 +118,24 @@ export const RevealPhase: React.FC<RevealPhaseProps> = ({
               You will need to figure out what the item is by asking questions
               and listening to other players' responses.
             </Text>
+
+            {gameMode.type === "teamKnown" &&
+              getCurrentPlayerTeammates().length > 0 && (
+                <View style={styles.teammatesSection}>
+                  <Text style={styles.teammatesTitle}>Your teammates are:</Text>
+                  <ScrollView style={styles.teammatesList}>
+                    {getCurrentPlayerTeammates().map((teammate, index) => (
+                      <View key={index} style={styles.teammateItem}>
+                        <Text style={styles.teammateName}>{teammate.name}</Text>
+                      </View>
+                    ))}
+                  </ScrollView>
+                  <Text style={styles.teammatesNote}>
+                    Work together to stay hidden and guess the item!
+                  </Text>
+                </View>
+              )}
+
             <TouchableOpacity
               style={styles.modalButton}
               onPress={handleModalClose}
@@ -177,5 +222,41 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontSize: 18,
     fontWeight: "bold",
+  },
+  teammatesSection: {
+    backgroundColor: "#2a2a2a",
+    borderRadius: 8,
+    padding: 15,
+    marginVertical: 20,
+    width: "100%",
+  },
+  teammatesTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#4CAF50",
+    textAlign: "center",
+    marginBottom: 10,
+  },
+  teammatesList: {
+    maxHeight: 120,
+    marginBottom: 10,
+  },
+  teammateItem: {
+    backgroundColor: "#1a1a1a",
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 5,
+  },
+  teammateName: {
+    fontSize: 16,
+    color: "#ffffff",
+    textAlign: "center",
+    fontWeight: "600",
+  },
+  teammatesNote: {
+    fontSize: 14,
+    color: "#cccccc",
+    textAlign: "center",
+    fontStyle: "italic",
   },
 });

@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { Player } from "../../types/player";
 import { getPlayersInTheDark } from "../../utils/players";
+import { logger } from "../../utils/logger";
 
 interface GuessingResultsPhaseProps {
   players: Player[];
@@ -24,6 +25,22 @@ export const GuessingResultsPhase: React.FC<GuessingResultsPhaseProps> = ({
   const correctGuesses = playersInTheDark.filter(
     (player) => player.answer?.toLowerCase() === selectedItem.toLowerCase()
   );
+
+  // Debug logging to understand the issue
+  logger.log("=== GuessingResultsPhase Debug ===");
+  logger.log(
+    "All players:",
+    players.map((p) => ({
+      name: p.name,
+      answer: p.answer,
+      isInTheDark: p.isInTheDark,
+    }))
+  );
+  logger.log(
+    "Players in the dark:",
+    playersInTheDark.map((p) => ({ name: p.name, answer: p.answer }))
+  );
+  logger.log("Selected item:", selectedItem);
 
   return (
     <View style={styles.container}>

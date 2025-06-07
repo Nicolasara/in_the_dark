@@ -5,6 +5,7 @@ import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { TitleScreen } from "./src/screens/TitleScreen";
 import { PlayerSelectionScreen } from "./src/screens/PlayerSelectionScreen";
+import { GameModeSelectionScreen } from "./src/screens/GameModeSelectionScreen";
 import { CategorySelectionScreen } from "./src/screens/CategorySelectionScreen";
 import { GameScreen } from "./src/screens/GameScreen";
 import { SafeScreen } from "./src/components/common/SafeScreen";
@@ -30,6 +31,10 @@ export default function App() {
             <Stack.Screen
               name="PlayerSelection"
               component={PlayerSelectionScreen}
+            />
+            <Stack.Screen
+              name="GameModeSelection"
+              component={GameModeSelectionScreen}
             />
             <Stack.Screen
               name="CategorySelection"

@@ -41,6 +41,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   const [selectedItem, setSelectedItem] = useState("");
   const [gamePhase, setGamePhase] = useState<GamePhase>(GAME_PHASES.SETUP);
   const [availableQuestions, setAvailableQuestions] = useState<string[]>([]);
+  const [gameMode, setGameMode] = useState(createGameMode(gameModeConfig));
 
   useEffect(() => {
     // Initialize players using utility function
@@ -111,18 +112,54 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     setPlayers(updatedPlayers);
   };
 
+  const updateMultiplePlayers = (
+    playerUpdates: { playerIndex: number; updates: Partial<Player> }[]
+  ) => {
+    const updatedPlayers = [...players];
+    playerUpdates.forEach(({ playerIndex, updates }) => {
+      updatedPlayers[playerIndex] = {
+        ...updatedPlayers[playerIndex],
+        ...updates,
+      };
+    });
+    setPlayers(updatedPlayers);
+  };
+
   const handlePlayerComplete = () => {
     if (gamePhase === GAME_PHASES.GUESSING) {
-      // Find the next player who is in the dark
+      const isTeamMode =
+        gameMode.type === "teamKnown" || gameMode.type === "teamUnknown";
+
+      if (isTeamMode) {
+        // Team mode: All players in the dark make one collective guess
+        // Once any player makes a guess, the phase is complete
+        handlePhaseComplete();
+        return;
+      }
+
+      // Individual/Single mode: Each player gets their own turn
+      const playersInTheDark = players.filter((player) => player.isInTheDark);
+      const playersWithGuesses = playersInTheDark.filter(
+        (player) => player.answer
+      );
+
+      if (playersWithGuesses.length >= playersInTheDark.length) {
+        // All players in the dark have made their guess, move to next phase
+        handlePhaseComplete();
+        return;
+      }
+
+      // Find the next player who is in the dark and hasn't made a guess yet
       let nextPlayerIndex = (currentPlayerIndex + 1) % players.length;
       while (nextPlayerIndex !== currentPlayerIndex) {
-        if (players[nextPlayerIndex].isInTheDark) {
+        const nextPlayer = players[nextPlayerIndex];
+        if (nextPlayer.isInTheDark && !nextPlayer.answer) {
           setCurrentPlayerIndex(nextPlayerIndex);
           return;
         }
         nextPlayerIndex = (nextPlayerIndex + 1) % players.length;
       }
-      // If we've gone through all players, move to the next phase
+      // If we've gone through all players and couldn't find one without a guess, move to next phase
       handlePhaseComplete();
     } else {
       setCurrentPlayerIndex(currentPlayerIndex + 1);
@@ -145,11 +182,13 @@ export const GameScreen: React.FC<GameScreenProps> = ({
         setGamePhase(GAME_PHASES.VOTE_RESULTS);
         break;
       case GAME_PHASES.VOTE_RESULTS:
-        // Find the first player who is in the dark
+        // Find the first player who is in the dark and hasn't made a guess yet
         const firstDarkPlayerIndex = players.findIndex(
-          (player) => player.isInTheDark
+          (player) => player.isInTheDark && !player.answer
         );
-        setCurrentPlayerIndex(firstDarkPlayerIndex);
+        setCurrentPlayerIndex(
+          firstDarkPlayerIndex >= 0 ? firstDarkPlayerIndex : 0
+        );
         setGamePhase(GAME_PHASES.GUESSING);
         break;
       case GAME_PHASES.GUESSING:
@@ -171,6 +210,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
           players={players}
           currentPlayerIndex={currentPlayerIndex}
           selectedItem={selectedItem}
+          gameMode={gameMode}
           onPhaseComplete={handlePhaseComplete}
           onPlayerComplete={handlePlayerComplete}
           updatePlayer={updatePlayer}
@@ -202,7 +242,6 @@ export const GameScreen: React.FC<GameScreenProps> = ({
         <VoteResultsPhase
           players={players}
           onPhaseComplete={handlePhaseComplete}
-          tieIsWin={false}
         />
       )}
       {gamePhase === GAME_PHASES.GUESSING && players.length > 0 && (
@@ -211,9 +250,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({
           currentPlayerIndex={currentPlayerIndex}
           selectedItem={selectedItem}
           categoryItems={categoryData.items}
+          gameMode={gameMode}
           onPhaseComplete={handlePhaseComplete}
           onPlayerComplete={handlePlayerComplete}
           updatePlayer={updatePlayer}
+          updateMultiplePlayers={updateMultiplePlayers}
         />
       )}
       {gamePhase === GAME_PHASES.GUESSING_RESULTS && players.length > 0 && (
@@ -228,6 +269,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
           players={players}
           selectedItem={selectedItem}
           onPlayAgain={() => navigation.navigate("Title")}
+          gameModeType={gameMode.type}
         />
       )}
     </View>

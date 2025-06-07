@@ -13,22 +13,22 @@ import { getPlayersInTheDark } from "../../utils/players";
 interface VoteResultsPhaseProps {
   players: Player[];
   onPhaseComplete: () => void;
-  tieIsWin?: boolean; // Whether a tie counts as a win for the players
 }
 
 export const VoteResultsPhase: React.FC<VoteResultsPhaseProps> = ({
   players,
   onPhaseComplete,
-  tieIsWin = false, // Default to false for backward compatibility
 }) => {
   const playersInTheDark = getPlayersInTheDark(players);
 
   // Use utility function to analyze voting results
-  const { mostVotedPlayers, wasCorrectlyIdentified, isTie } =
+  const { mostVotedPlayers, wasCorrectlyIdentified, isTie, tieBreakWinner } =
     analyzeVotingResults(players);
 
-  // Determine the result based on tieIsWin prop
-  const playersWon = isTie ? tieIsWin : wasCorrectlyIdentified;
+  // Determine the result based on the new tie logic
+  const playersWon = isTie
+    ? tieBreakWinner === "inTheLoop" // In tie situations, check who won the tiebreak
+    : wasCorrectlyIdentified;
 
   return (
     <View style={styles.container}>
@@ -44,9 +44,11 @@ export const VoteResultsPhase: React.FC<VoteResultsPhaseProps> = ({
         </Text>
         {isTie && (
           <Text style={styles.tieText}>
-            {tieIsWin
-              ? "Tie goes to the players!"
-              : "Tie goes to the player in the dark!"}
+            {tieBreakWinner === "inTheLoop"
+              ? "All tied players are in the dark! In the loop team wins!"
+              : tieBreakWinner === "inTheDark"
+              ? "All tied players are in the loop! In the dark team wins!"
+              : "Mixed tie - partial success for both teams!"}
           </Text>
         )}
       </View>

@@ -67,16 +67,7 @@ export const PlayerSelectionScreen: React.FC<PlayerSelectionScreenProps> = ({
       return;
     }
 
-    // Use utility to create proper game mode configuration
-    const gameMode: GameModeType = "single";
-    const gameModeConfig = {
-      type: gameMode,
-      totalPlayers: players.length,
-      inTheDarkPlayers: calculateMaxInTheDarkPlayers(players.length, gameMode),
-    };
-
-    navigation.navigate("CategorySelection", {
-      gameModeConfig,
+    navigation.navigate("GameModeSelection", {
       playerNames: players,
     });
   };

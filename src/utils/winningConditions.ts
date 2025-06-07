@@ -6,6 +6,7 @@ import {
   WinningResult,
   WinType,
 } from "../types/winningConditions";
+import { analyzeVotingResults } from "./voting";
 
 // Win type constants for better type safety and consistency
 const WIN_TYPES = {
@@ -27,12 +28,31 @@ export function calculateGameOutcomes(gameState: GameState): GameOutcome {
     (player) => player.isInTheDark
   );
 
-  // Find the player(s) with the most votes
-  const maxVotes = Math.max(...gameState.players.map((p) => p.votes));
-  const mostVotedPlayers = gameState.players.filter(
-    (p) => p.votes === maxVotes && maxVotes > 0
-  );
-  const caughtIds = new Set(mostVotedPlayers.map((p) => p.id));
+  // Use the proper voting analysis to determine who was caught
+  const { mostVotedPlayers, wasCorrectlyIdentified, isTie, tieBreakWinner } =
+    analyzeVotingResults(gameState.players);
+
+  // Determine caught players based on proper tie logic
+  let caughtIds: Set<string>;
+  if (!isTie) {
+    // No tie - simple case
+    caughtIds = new Set(mostVotedPlayers.map((p) => p.id));
+  } else {
+    // There's a tie - use tie-breaking logic
+    if (tieBreakWinner === "inTheLoop") {
+      // All tied players are in the dark - they are all "caught"
+      caughtIds = new Set(mostVotedPlayers.map((p) => p.id));
+    } else if (tieBreakWinner === "inTheDark") {
+      // All tied players are in the loop - no one is caught
+      caughtIds = new Set();
+    } else {
+      // Mixed tie - only the "in the dark" players among the tied are caught
+      const tiedInTheDark = mostVotedPlayers.filter(
+        (player) => player.isInTheDark
+      );
+      caughtIds = new Set(tiedInTheDark.map((p) => p.id));
+    }
+  }
 
   // Determine if any in the dark player was caught
   const anyCaught = playersInTheDark.some((p) => caughtIds.has(p.id));

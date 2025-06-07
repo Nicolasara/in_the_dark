@@ -7,15 +7,21 @@ import {
   ScrollView,
 } from "react-native";
 import { Player } from "../../types/player";
+import { GameMode } from "../../types/gameModes";
+import { getPlayersInTheDark } from "../../utils/players";
 
 interface GuessingPhaseProps {
   players: Player[];
   currentPlayerIndex: number;
   selectedItem: string;
   categoryItems: string[];
+  gameMode: GameMode;
   onPhaseComplete: () => void;
   onPlayerComplete: () => void;
   updatePlayer: (playerIndex: number, updates: Partial<Player>) => void;
+  updateMultiplePlayers?: (
+    playerUpdates: { playerIndex: number; updates: Partial<Player> }[]
+  ) => void;
 }
 
 export const GuessingPhase: React.FC<GuessingPhaseProps> = ({
@@ -23,13 +29,18 @@ export const GuessingPhase: React.FC<GuessingPhaseProps> = ({
   currentPlayerIndex,
   selectedItem,
   categoryItems,
+  gameMode,
   onPhaseComplete,
   onPlayerComplete,
   updatePlayer,
+  updateMultiplePlayers,
 }) => {
   const [options, setOptions] = useState<string[]>([]);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const currentPlayer = players[currentPlayerIndex];
+  const playersInTheDark = getPlayersInTheDark(players);
+  const isTeamMode =
+    gameMode.type === "teamKnown" || gameMode.type === "teamUnknown";
 
   useEffect(() => {
     // Generate 5 random items from the category (excluding the selected item)
@@ -52,7 +63,31 @@ export const GuessingPhase: React.FC<GuessingPhaseProps> = ({
 
   const handleConfirm = () => {
     if (selectedOption) {
-      updatePlayer(currentPlayerIndex, { answer: selectedOption });
+      if (isTeamMode) {
+        // Team mode: Set the same answer for all players in the dark
+        if (updateMultiplePlayers) {
+          // Use bulk update if available
+          const playerUpdates = playersInTheDark
+            .map((player) => {
+              const playerIndex = players.findIndex((p) => p.id === player.id);
+              return { playerIndex, updates: { answer: selectedOption } };
+            })
+            .filter((update) => update.playerIndex >= 0);
+
+          updateMultiplePlayers(playerUpdates);
+        } else {
+          // Fallback to individual updates
+          playersInTheDark.forEach((player) => {
+            const playerIndex = players.findIndex((p) => p.id === player.id);
+            if (playerIndex >= 0) {
+              updatePlayer(playerIndex, { answer: selectedOption });
+            }
+          });
+        }
+      } else {
+        // Individual mode: Set answer only for current player
+        updatePlayer(currentPlayerIndex, { answer: selectedOption });
+      }
       onPlayerComplete();
       setSelectedOption(null);
     }
@@ -69,11 +104,35 @@ export const GuessingPhase: React.FC<GuessingPhaseProps> = ({
     );
   }
 
+  if (currentPlayer.answer) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>
+          {isTeamMode ? "Team Guess Complete" : "Guess Already Made"}
+        </Text>
+        <Text style={styles.subtitle}>
+          {isTeamMode
+            ? `Your team has already made a guess: "${currentPlayer.answer}"`
+            : `${currentPlayer.name}, you have already made your guess: "${currentPlayer.answer}"`}
+        </Text>
+        <Text style={styles.subtitle}>
+          {isTeamMode ? "Moving to results..." : "Waiting for other players..."}
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Make Your Guess</Text>
+      <Text style={styles.title}>
+        {isTeamMode ? "Team Guess" : "Make Your Guess"}
+      </Text>
       <Text style={styles.subtitle}>
-        {currentPlayer.name}, what do you think the item is?
+        {isTeamMode
+          ? `Team in the dark (${playersInTheDark
+              .map((p) => p.name)
+              .join(", ")}), what do you think the item is?`
+          : `${currentPlayer.name}, what do you think the item is?`}
       </Text>
 
       <ScrollView style={styles.optionsList}>
