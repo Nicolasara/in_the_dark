@@ -87,6 +87,23 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     setPlayers(updatedPlayers);
   };
 
+  const assignQuestionToPlayer = (playerIndex: number) => {
+    if (availableQuestions.length === 0) return;
+
+    const randomQuestionIndex = Math.floor(
+      Math.random() * availableQuestions.length
+    );
+    const question = availableQuestions[randomQuestionIndex];
+
+    setAvailableQuestions(
+      availableQuestions.filter((_, i) => i !== randomQuestionIndex)
+    );
+
+    const updatedPlayers = [...players];
+    updatedPlayers[playerIndex].question = question;
+    setPlayers(updatedPlayers);
+  };
+
   const submitVote = (votedPlayerIndex: number) => {
     const updatedPlayers = [...players];
     updatedPlayers[votedPlayerIndex].votes += 1;
@@ -230,6 +247,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
           onPlayerComplete={handlePlayerComplete}
           updatePlayer={updatePlayer}
           assignQuestion={assignQuestion}
+          assignQuestionToPlayer={assignQuestionToPlayer}
         />
       )}
       {gamePhase === GAME_PHASES.REVIEW && players.length > 0 && (

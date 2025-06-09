@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Player } from "../../types/player";
 
@@ -9,6 +9,7 @@ interface QuestionsPhaseProps {
   onPlayerComplete: () => void;
   updatePlayer: (playerIndex: number, updates: Partial<Player>) => void;
   assignQuestion: () => void;
+  assignQuestionToPlayer?: (playerIndex: number) => void;
 }
 
 export const QuestionsPhase: React.FC<QuestionsPhaseProps> = ({
@@ -18,67 +19,22 @@ export const QuestionsPhase: React.FC<QuestionsPhaseProps> = ({
   onPlayerComplete,
   updatePlayer,
   assignQuestion,
+  assignQuestionToPlayer,
 }) => {
-  const [questionAssignments, setQuestionAssignments] = useState<number[]>([]);
-  const [currentAskerIndex, setCurrentAskerIndex] = useState(0);
-
-  // Initialize question assignments when component mounts
-  useEffect(() => {
-    if (questionAssignments.length === 0) {
-      // Create assignments where each player asks one other player
-      const assignments = players.map((_, askerIndex) => {
-        // Create array of possible targets (excluding the asker)
-        const possibleTargets = players
-          .map((_, index) => index)
-          .filter((index) => index !== askerIndex);
-
-        // Randomly select one target
-        const randomIndex = Math.floor(Math.random() * possibleTargets.length);
-        return possibleTargets[randomIndex];
-      });
-
-      setQuestionAssignments(assignments);
-    }
-  }, []);
+  // Simple pattern: each player gets asked by the previous player in the array
+  // Player 0 gets asked by Player (n-1), Player 1 gets asked by Player 0, etc.
+  const currentTarget = players[currentPlayerIndex];
+  const currentAskerIndex =
+    currentPlayerIndex === 0 ? players.length - 1 : currentPlayerIndex - 1;
+  const currentAsker = players[currentAskerIndex];
 
   const handleNextPlayer = () => {
-    // Find the next valid asker
-    let nextIndex = currentAskerIndex + 1;
-    while (
-      nextIndex < players.length &&
-      questionAssignments[nextIndex] === -1
-    ) {
-      nextIndex++;
-    }
-
-    if (nextIndex >= players.length) {
+    if (currentPlayerIndex >= players.length - 1) {
       onPhaseComplete();
     } else {
-      setCurrentAskerIndex(nextIndex);
       onPlayerComplete();
     }
   };
-
-  const currentAsker = players[currentAskerIndex];
-  const targetIndex = questionAssignments[currentAskerIndex];
-  const currentTarget = targetIndex !== -1 ? players[targetIndex] : null;
-
-  // If current player is not a valid asker, move to next player
-  useEffect(() => {
-    if (currentTarget === null && currentAskerIndex < players.length) {
-      handleNextPlayer();
-    }
-  }, [currentAskerIndex]);
-
-  // If we've gone through all players, end the phase
-  if (currentAskerIndex >= players.length) {
-    onPhaseComplete();
-    return null;
-  }
-
-  if (!currentTarget) {
-    return null;
-  }
 
   return (
     <View style={styles.container}>
@@ -93,7 +49,25 @@ export const QuestionsPhase: React.FC<QuestionsPhaseProps> = ({
       </View>
 
       {!currentAsker.question ? (
-        <TouchableOpacity style={styles.actionButton} onPress={assignQuestion}>
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={() => {
+            // Use the new assignQuestionToPlayer function if available,
+            // otherwise fallback to the workaround
+            if (assignQuestionToPlayer) {
+              assignQuestionToPlayer(currentAskerIndex);
+            } else {
+              // Fallback: assign to current target then move to asker
+              assignQuestion();
+              if (currentTarget.question && !currentAsker.question) {
+                updatePlayer(currentAskerIndex, {
+                  question: currentTarget.question,
+                });
+                updatePlayer(currentPlayerIndex, { question: undefined });
+              }
+            }
+          }}
+        >
           <Text style={styles.actionButtonText}>Get Question</Text>
         </TouchableOpacity>
       ) : (
