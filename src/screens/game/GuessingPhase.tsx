@@ -7,7 +7,7 @@ import {
   ScrollView,
 } from "react-native";
 import { Player } from "../../types/player";
-import { GameMode } from "../../types/gameModes";
+import { GameMode, GAME_MODES } from "../../types/gameModes";
 import { getPlayersInTheDark } from "../../utils/players";
 
 interface GuessingPhaseProps {
@@ -40,7 +40,8 @@ export const GuessingPhase: React.FC<GuessingPhaseProps> = ({
   const currentPlayer = players[currentPlayerIndex];
   const playersInTheDark = getPlayersInTheDark(players);
   const isTeamMode =
-    gameMode.type === "teamKnown" || gameMode.type === "teamUnknown";
+    gameMode.type === GAME_MODES.TEAM_KNOWN ||
+    gameMode.type === GAME_MODES.TEAM_UNKNOWN;
 
   useEffect(() => {
     // Generate 5 random items from the category (excluding the selected item)

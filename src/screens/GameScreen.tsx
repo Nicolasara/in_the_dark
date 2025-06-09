@@ -8,6 +8,7 @@ import { GamePhase, GAME_PHASES } from "../types/gameState";
 import { gameData } from "../data/gameData";
 import { generateStartingPlayers, shuffleArray } from "../utils/players";
 import { createGameMode } from "../utils/gameModes";
+import { GAME_MODES } from "../types/gameModes";
 import { SetupPhase } from "./game/SetupPhase";
 import { RevealPhase } from "./game/RevealPhase";
 import { QuestionsPhase } from "./game/QuestionsPhase";
@@ -132,7 +133,8 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   const handlePlayerComplete = () => {
     if (gamePhase === GAME_PHASES.GUESSING) {
       const isTeamMode =
-        gameMode.type === "teamKnown" || gameMode.type === "teamUnknown";
+        gameMode.type === GAME_MODES.TEAM_KNOWN ||
+        gameMode.type === GAME_MODES.TEAM_UNKNOWN;
 
       if (isTeamMode) {
         // Team mode: All players in the dark make one collective guess

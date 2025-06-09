@@ -5,6 +5,7 @@ import {
   TeamKnownMode,
   TeamUnknownMode,
   GameModeConfig,
+  GAME_MODES,
 } from "../types/gameModes";
 
 export function calculateMaxInTheDarkPlayers(
@@ -12,15 +13,15 @@ export function calculateMaxInTheDarkPlayers(
   type: GameModeType
 ): number {
   switch (type) {
-    case "single":
+    case GAME_MODES.SINGLE:
       return 1;
-    case "teamKnown":
+    case GAME_MODES.TEAM_KNOWN:
       // If teammates know each other, we need more in the loop than in the dark
       return Math.floor((totalPlayers - 1) / 2);
-    case "teamUnknown":
+    case GAME_MODES.TEAM_UNKNOWN:
       // If teammates don't know each other, we can have equal numbers
       return Math.floor(totalPlayers / 2);
-    case "individual":
+    case GAME_MODES.INDIVIDUAL:
       // For individual mode, we can have equal numbers
       return Math.floor(totalPlayers / 2);
   }
@@ -30,13 +31,13 @@ export function createGameMode(config: GameModeConfig): GameMode {
   const { type, totalPlayers, inTheDarkPlayers } = config;
 
   switch (type) {
-    case "single":
+    case GAME_MODES.SINGLE:
       return {
         type,
         inTheDarkPlayers: 1,
       };
 
-    case "teamKnown":
+    case GAME_MODES.TEAM_KNOWN:
       const teamKnownMode: TeamKnownMode = {
         type,
         inTheDarkPlayers:
@@ -44,7 +45,7 @@ export function createGameMode(config: GameModeConfig): GameMode {
       };
       return teamKnownMode;
 
-    case "teamUnknown":
+    case GAME_MODES.TEAM_UNKNOWN:
       const teamUnknownMode: TeamUnknownMode = {
         type,
         inTheDarkPlayers:
@@ -52,7 +53,7 @@ export function createGameMode(config: GameModeConfig): GameMode {
       };
       return teamUnknownMode;
 
-    case "individual":
+    case GAME_MODES.INDIVIDUAL:
       const individualMode: IndividualMode = {
         type,
         inTheDarkPlayers:

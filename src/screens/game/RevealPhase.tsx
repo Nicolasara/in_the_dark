@@ -8,7 +8,7 @@ import {
   ScrollView,
 } from "react-native";
 import { Player } from "../../types/player";
-import { GameMode } from "../../types/gameModes";
+import { GameMode, GAME_MODES } from "../../types/gameModes";
 import { getPlayersInTheDark } from "../../utils/players";
 
 interface RevealPhaseProps {
@@ -45,7 +45,7 @@ export const RevealPhase: React.FC<RevealPhaseProps> = ({
   };
 
   const getCurrentPlayerTeammates = () => {
-    if (gameMode.type !== "teamKnown") {
+    if (gameMode.type !== GAME_MODES.TEAM_KNOWN) {
       return [];
     }
 
@@ -119,7 +119,7 @@ export const RevealPhase: React.FC<RevealPhaseProps> = ({
               and listening to other players' responses.
             </Text>
 
-            {gameMode.type === "teamKnown" &&
+            {gameMode.type === GAME_MODES.TEAM_KNOWN &&
               getCurrentPlayerTeammates().length > 0 && (
                 <View style={styles.teammatesSection}>
                   <Text style={styles.teammatesTitle}>Your teammates are:</Text>

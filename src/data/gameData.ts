@@ -1,3 +1,5 @@
+import { CATEGORIES } from "../types/categories";
+
 export interface CategoryData {
   id: string;
   name: string;
@@ -6,8 +8,8 @@ export interface CategoryData {
 }
 
 export const gameData: Record<string, CategoryData> = {
-  food: {
-    id: "food",
+  [CATEGORIES.FOOD]: {
+    id: CATEGORIES.FOOD,
     name: "Food & Drinks",
     items: [
       "Pizza",
@@ -49,8 +51,8 @@ export const gameData: Record<string, CategoryData> = {
       "Is it typically served in a bowl?",
     ],
   },
-  household: {
-    id: "household",
+  [CATEGORIES.HOUSEHOLD]: {
+    id: CATEGORIES.HOUSEHOLD,
     name: "Household Items",
     items: [
       "Toaster",
@@ -92,8 +94,8 @@ export const gameData: Record<string, CategoryData> = {
       "Is it typically found in the bathroom?",
     ],
   },
-  jobs: {
-    id: "jobs",
+  [CATEGORIES.JOBS]: {
+    id: CATEGORIES.JOBS,
     name: "Jobs & Professions",
     items: [
       "Doctor",
@@ -135,8 +137,8 @@ export const gameData: Record<string, CategoryData> = {
       "Does it involve working with computers?",
     ],
   },
-  cocktails: {
-    id: "cocktails",
+  [CATEGORIES.COCKTAILS]: {
+    id: CATEGORIES.COCKTAILS,
     name: "Cocktails & Drinks",
     items: [
       "Margarita",

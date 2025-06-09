@@ -10,7 +10,7 @@ import {
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../types/navigation";
-import { GameModeType } from "../types/gameModes";
+import { GameModeType, GAME_MODES } from "../types/gameModes";
 import {
   createGameMode,
   calculateMaxInTheDarkPlayers,
@@ -39,26 +39,26 @@ interface GameModeOption {
 
 const GAME_MODE_OPTIONS: GameModeOption[] = [
   {
-    type: "single",
+    type: GAME_MODES.SINGLE,
     title: "Single Player Mode",
     description: "One player is in the dark, everyone else is in the loop",
     minPlayers: 3,
   },
   {
-    type: "teamKnown",
+    type: GAME_MODES.TEAM_KNOWN,
     title: "Team Mode (Known)",
     description: "Multiple players in the dark know who their teammates are",
     minPlayers: 4,
   },
   {
-    type: "teamUnknown",
+    type: GAME_MODES.TEAM_UNKNOWN,
     title: "Team Mode (Unknown)",
     description:
       "Multiple players in the dark don't know who their teammates are",
     minPlayers: 4,
   },
   {
-    type: "individual",
+    type: GAME_MODES.INDIVIDUAL,
     title: "Individual Mode",
     description: "Multiple players in the dark compete independently",
     minPlayers: 4,
@@ -71,8 +71,9 @@ export const GameModeSelectionScreen: React.FC<
   const { playerNames } = route.params;
   const totalPlayers = playerNames.length;
 
-  const [selectedGameMode, setSelectedGameMode] =
-    useState<GameModeType>("single");
+  const [selectedGameMode, setSelectedGameMode] = useState<GameModeType>(
+    GAME_MODES.SINGLE
+  );
   const [inTheDarkPlayers, setInTheDarkPlayers] = useState<number>(1);
 
   // Get available game modes based on player count
@@ -88,7 +89,7 @@ export const GameModeSelectionScreen: React.FC<
 
   // Update inTheDarkPlayers when game mode changes
   React.useEffect(() => {
-    if (selectedGameMode === "single") {
+    if (selectedGameMode === GAME_MODES.SINGLE) {
       setInTheDarkPlayers(1);
     } else {
       // For multi-player modes, default to 2 or max if less
@@ -126,7 +127,7 @@ export const GameModeSelectionScreen: React.FC<
   };
 
   const renderPlayerCountSelector = () => {
-    if (selectedGameMode === "single") {
+    if (selectedGameMode === GAME_MODES.SINGLE) {
       return null; // Single mode always has 1 player in the dark
     }
 

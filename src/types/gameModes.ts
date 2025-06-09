@@ -1,3 +1,11 @@
+// Game mode constants for better type safety and consistency
+export const GAME_MODES = {
+  SINGLE: "single" as const,
+  TEAM_KNOWN: "teamKnown" as const,
+  TEAM_UNKNOWN: "teamUnknown" as const,
+  INDIVIDUAL: "individual" as const,
+};
+
 export type GameModeType =
   | "single"
   | "teamKnown"

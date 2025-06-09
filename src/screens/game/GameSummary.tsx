@@ -4,7 +4,7 @@ import { Player } from "../../types/player";
 import { calculateGameOutcomes } from "../../utils/winningConditions";
 import { GameState, GAME_PHASES } from "../../types/gameState";
 import { createGameMode } from "../../utils/gameModes";
-import { GameModeType } from "../../types/gameModes";
+import { GameModeType, GAME_MODES } from "../../types/gameModes";
 import { getMostVotedPlayer, analyzeVotingResults } from "../../utils/voting";
 import { getPlayersInTheDark } from "../../utils/players";
 import { GameResult, GAME_RESULTS } from "../../types/gameResult";
@@ -21,7 +21,7 @@ export const GameSummary: React.FC<GameSummaryProps> = ({
   players,
   selectedItem,
   onPlayAgain,
-  gameModeType = "single",
+  gameModeType = GAME_MODES.SINGLE,
 }) => {
   // Use utility function to calculate proper game outcomes
   const gameMode = createGameMode({
